@@ -29,7 +29,7 @@ const props = defineProps({
 
 <template>
     <div class="flex flex-col">
-        <label :for="id">{{ label }}</label>
+        <label :for="id">{{ label }} <span v-if="required" class="text-accent">*</span></label>
         <input :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" :type="type" :id="id"
             :required="required" :placeholder="placeholder" class="p-2 border rounded-md border-gray-300 outline-none">
     </div>

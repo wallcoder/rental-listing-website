@@ -9,7 +9,7 @@ const test = () => {
 </script>
 <template>
     <section class="w-full flex items-center justify-center h-[90vh]">
-        <form class="flex flex-col bg-white p-4 gap-2 w-[300px] rounded-md" @submit.prevent="test">
+        <form class="flex flex-col bg-white border  p-6 gap-2 w-[300px] rounded-md" @submit.prevent="test">
             <h2 class="text-lg font-semibold">Sign up</h2>
             <FormInput label="Name" placeholder="Enter Name" type="email" id="name"/>
             <FormInput label="Email" placeholder="Enter Email" type="email" id="email" />

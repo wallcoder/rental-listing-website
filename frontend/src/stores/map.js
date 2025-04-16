@@ -8,7 +8,9 @@ import { push } from 'notivue'
 export const useMapStore = defineStore('map', () => {
   
 const autocompleteInput = ref(null)
+
 let autocompleteInstance = ref(null)
+const userDragged = ref(false)
 const zoom = 15
 const searchLoc = ref('')
 const api = ref(import.meta.env.VITE_MAP_API)
@@ -37,7 +39,7 @@ const addMarker = async (event) => {
     const latLng = event.latLng
     const lat = latLng.lat()
     const lng = latLng.lng()
-
+   
     location.value = { lat, lng }
     markers.value = [{
         position: { lat, lng },
@@ -62,7 +64,7 @@ const addMarker = async (event) => {
 
 
   return {
-    autocompleteInput, searchLoc, autocompleteInstance, zoom, api, markers, location,
+    autocompleteInput, searchLoc, autocompleteInstance, zoom, api, markers, location, userDragged,
     loader, removeMarker, addMarker
    
   }

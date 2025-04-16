@@ -11,8 +11,8 @@ const test = () => {
 }
 </script>
 <template>
-    <section class="w-full flex items-center justify-center h-[90vh]">
-        <form @submit.prevent="handleLogin" class="flex flex-col bg-white p-4 gap-2 w-[300px] rounded-md">
+    <section class="w-full flex items-center justify-center  h-[90vh]">
+        <form @submit.prevent="handleLogin" class="flex flex-col border  bg-white p-6 gap-2 w-[300px] rounded-md">
             <h2 class="text-lg font-semibold">Login</h2>
 
             <FormInput v-model="login.email" label="Email" placeholder="Enter Email" type="email" />

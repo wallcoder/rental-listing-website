@@ -39,10 +39,10 @@ const props = defineProps({
 })
 </script>
 <template>
-    <RouterLink v-if="isLink" :to="props.link" :class="extraStyle"
-        class="flex items-center justify-center gap-2 cursor-pointer p-[6px] px-5 text-center rounded-3xl bg-accent hover:brightness-110 active:brightness-100  text-white">
-        <i v-if="icon" :class="icon"></i> <span>{{ props.content }}</span></RouterLink>
-    <button :type="type" v-else @click="props.fun" :class="extraStyle" 
-        class="flex items-center justify-center gap-2 cursor-pointer p-[6px] px-5 rounded-3xl  bg-accent hover:brightness-110 active:brightness-100  text-white">
-        <i v-if="icon" :class="icon"></i> <span>{{ props.content }}</span></button>
+    <RouterLink v-if="isLink" :to="props.link" :class="extraStyle ? extraStyle : 'text-white bg-accent hover:brightness-110'"
+        class="flex items-center justify-center gap-2 cursor-pointer p-[8px] px-5 text-center rounded-3xl    active:brightness-100  ">
+         <span>{{ props.content }}</span><i v-if="icon" :class="icon"></i></RouterLink>
+    <button :type="type" v-else @click="props.fun" :class="extraStyle ? extraStyle : 'text-white bg-accent hover:brightness-110 '"
+        class="flex items-center justify-center gap-2 cursor-pointer p-[6px] px-5 rounded-3xl  bg-accent active:brightness-100  text-white">
+         <span>{{ props.content }}</span><i v-if="icon" :class="icon"></i></button>
 </template>
