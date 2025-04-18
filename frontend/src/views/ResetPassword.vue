@@ -20,7 +20,7 @@ const props = defineProps({
 </script>
 <template>
     <section class="w-full flex items-center justify-center h-[90vh]">
-        <form class="flex flex-col bg-white p-4 gap-2 w-[300px] rounded-md" @submit.prevent="test">
+        <form class="flex flex-col border bg-white p-6 gap-2 w-[300px] rounded-md" @submit.prevent="test">
             <h2 class="text-lg font-semibold">Reset password</h2>
             <span>Email: {{ email }}</span>
             

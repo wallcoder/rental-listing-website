@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
-    "@vueuse/core": "^13.0.0",
+    "@vueuse/core": "^13.1.0",
     "axios": "^1.8.4",
     "boxicons": "^2.1.4",
     "cropperjs": "^2.0.0",

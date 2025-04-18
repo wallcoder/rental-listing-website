@@ -76,10 +76,10 @@ onMounted(async () => {
 <template>
     <div class="  flex justify-center items-center   flex-col gap-6 py-10 w-full min-h-[30vh]">
         <div class="flex justify-center items-center flex-col gap-2 ">
-            <h1 class="text-3xl text-center"><span class=" ">Find Houses & Shops for Rent across
+            <h1 class="text-3xl  text-center"><span class=" ">Find Houses & Shops for Rent across
                     Mizoram </span>
             </h1>
-            <h1 class="text-center">
+            <h1 class="text-center ">
 
                 <span class="font italic text-gray-500">"Find the right space — for living or for launching — right here
                     in Mizoram."</span>
