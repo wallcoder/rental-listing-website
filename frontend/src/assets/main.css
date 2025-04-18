@@ -3,5 +3,16 @@
 @tailwind utilities;
 
 *{
+    font-family: "Outfit", sans-serif;
     transition: all 100ms linear;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }

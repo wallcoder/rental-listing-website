@@ -2,10 +2,13 @@ import { defineStore } from "pinia";
 import {ref, watch} from 'vue'
 import axios from "axios";
 import { push } from "notivue";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 export const useAuthStore = defineStore('auth', ()=>{
     const user = ref(null)
-    const router = useRoute()
+    const isLoggedin = ref()
+    const isLoadingLogin = ref(false)
+    const isLoadingSignup = ref(false)
+    const router = useRouter()
     const login = ref({
         email: '',
         password: '',
@@ -16,7 +19,7 @@ export const useAuthStore = defineStore('auth', ()=>{
         name: '',
         email: '',
         password: '',
-        conPassword: '',
+        confirm_password: '',
        
     })
 
@@ -101,14 +104,16 @@ const handleRequestPasswordReset =async  ()=>{
     // LOGIN
     const handleLogin = async ()=>{
         try{
+            isLoadingLogin.value = true
             const response = await axios.post('/login', {
                 email: login.value.email,
                 password: login.value.password,
             })
 
-            localStorage.setItem('token', JSON.stringify(response.data.token))
+            
+            localStorage.setItem('user', JSON.stringify(response.data.data))
             router.push('/')
-            getUserDetails()
+            isLoggedin.value = true;
             push.success(response.data.message)
             login.value = {
                 email: '',
@@ -123,6 +128,8 @@ const handleRequestPasswordReset =async  ()=>{
           
             push.error(err.response.data.message) 
         }
+        }finally{
+            isLoadingLogin.value = false
         }
       
 
@@ -132,16 +139,19 @@ const handleRequestPasswordReset =async  ()=>{
 
     const handleSignUp = async ()=>{
         try{
-            const response = await axios.post('/signup', {
+            isLoadingSignup.value = true
+            const response = await axios.post('/register', {
                 email: signUp.value.email,
                 name: signUp.value.name,
                 password: signUp.value.password,
-                conPassword: signUp.value.conPassword,
+                confirm_password: signUp.value.confirm_password,
             })
 
-            localStorage.setItem('token', JSON.stringify(response.data.token))
+            isLoggedin.value = true;
+            
+            localStorage.setItem('user', JSON.stringify(response.data.data))
             router.push('/')
-            getUserDetails()
+            
             signUp.value = {
                 name: '',
                 email: '',
@@ -156,7 +166,23 @@ const handleRequestPasswordReset =async  ()=>{
 
         }catch(err){
             console.log(err)
-            push.error(err.response.data.message) 
+            if(err.response.data){
+                const message = err.response.data.message
+                if(message.email){
+                    push.error(err.response.data.message['email'][0]) 
+                    console.log("Error: ", err.response.data.message['email'])
+                }else if(message.password){
+                    push.error(err.response.data.message['password'][0]) 
+                    console.log("Error: ", err.response.data.message['password'])
+                }else if(message.confirm_password){
+                    push.error(err.response.data.message['confirm_password'][0]) 
+                    console.log("Error: ", err.response.data.message['confirm_password'])
+                }
+                
+            }
+            // push.error(err.response.data.message) 
+        }finally{
+            isLoadingSignup.value = false
         }
     }
 
@@ -172,10 +198,42 @@ const handleRequestPasswordReset =async  ()=>{
         }
     }
 
+    const checkToken  = async(init=false)=>{
+        try{
+            const response = await axios.get('/me')
+            localStorage.setItem('user', JSON.stringify(response.data.data))
+            isLoggedin.value = true
+            user.value = JSON.parse(localStorage.getItem('user'))
+            console.log("user: ", user.value)
+            
+        }catch(err){
+            // console.log(err)
+            if(err.response.status == 401){
+                if(init)
+                    return
+                // push.error(`${err.response.data.message}. You are logged out`)
+                logout()
+            }
+           
+        }
+    }
+
+    const logout = async()=>{
+        try{
+            const response = await axios.post('/logout')
+            localStorage.removeItem('user')
+
+            push.success(response.data.message)
+            isLoggedin.value = false
+            router.push('/')
+        }catch(err){
+            console.log(err)
+        }
+    }
     
-    return {login, signUp, user, reqPassReset, resetPassword,
+    return {login, signUp, user, reqPassReset, resetPassword, isLoggedin, isLoadingLogin, isLoadingSignup,
         
-        
-        handleLogin, handleSignUp, setTimer, handleResetPassword, handleRequestPasswordReset}
+        logout,
+        handleLogin, handleSignUp, setTimer, handleResetPassword, handleRequestPasswordReset, checkToken}
 
 })

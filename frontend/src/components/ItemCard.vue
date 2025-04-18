@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import {RouterLink} from 'vue-router';
+import { RouterLink } from 'vue-router';
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -44,73 +44,63 @@ const rentalListings = ref([
         location: "Chhimtuipui, Aizawl",
         posted: "1 week ago",
     },
+    {
+        id: 1,
+        price: "₹5000/month",
+        bedrooms: 2,
+        bathrooms: 2,
+        livingRooms: 1,
+        location: "Chhinga Veng, Aizawl",
+        posted: "1 day ago",
+    },
+    {
+        id: 2,
+        price: "₹7500/month",
+        bedrooms: 3,
+        bathrooms: 2,
+        livingRooms: 1,
+        location: "Bairabi, Aizawl",
+        posted: "3 days ago",
+    },
     
+
 ]);
 </script>
 <template>
-    <RouterLink to="/rental-properties/asdsdfgasdsad" class="flex  relative flex-col cursor-pointer p-2 border-2 hover:shadow-lg transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
+    <RouterLink to="/rental-properties/asdsdfgasdsad"
+        class="flex flex-col relative cursor-pointer  border hover:shadow-lg transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
         v-for="n in rentalListings" :key="n">
-        <div class="group">
-            <Swiper :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="1" :loop="true" class="w-full h-48 "
-                :hideOnClick=true  :navigation="false"
-                :pagination="{ clickable: true }" >
-                <SwiperSlide>
-                    <img class="w-full h-48 object-cover"
-                        src="https://media.istockphoto.com/id/1415886887/photo/freshly-painted-craftsman-bungalow-house.jpg?s=612x612&w=0&k=20&c=lcwiyJqjUoIM0FfRb3TwV2BzUY8RS7oT9zFmZGv4nLI="
-                        alt="House Image">
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img class="w-full h-48 object-cover"
-                        src="https://media.istockphoto.com/id/1415886887/photo/freshly-painted-craftsman-bungalow-house.jpg?s=612x612&w=0&k=20&c=lcwiyJqjUoIM0FfRb3TwV2BzUY8RS7oT9zFmZGv4nLI="
-                        alt="House Image">
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img class="w-full h-48 object-cover"
-                        src="https://media.istockphoto.com/id/1415886887/photo/freshly-painted-craftsman-bungalow-house.jpg?s=612x612&w=0&k=20&c=lcwiyJqjUoIM0FfRb3TwV2BzUY8RS7oT9zFmZGv4nLI="
-                        alt="House Image">
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img class="w-full h-48 object-cover"
-                        src="https://media.istockphoto.com/id/1415886887/photo/freshly-painted-craftsman-bungalow-house.jpg?s=612x612&w=0&k=20&c=lcwiyJqjUoIM0FfRb3TwV2BzUY8RS7oT9zFmZGv4nLI="
-                        alt="House Image">
-                </SwiperSlide>
-
-            </Swiper>
-            <div
-                class="absolute inset-0 flex items-end justify-center pb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div class="swiper-pagination"></div>
+        <div class="relative">
+            <img src="../assets/house.jpg" class="w-full" alt="">
+            <div class="bg-green-400 absolute rounded-full -bottom-4 right-4 bx bx-home-alt-2 text-white p-2">
+              
             </div>
         </div>
+        <div class="px-4 py-2 flex flex-col">
+            <span class="text-sm text-gray-600">{{ n.location }}</span>
 
-
-        <div class=" flex flex-col p-3">
-            <h2 class="font-semibold text-lg">{{ n.price }}</h2>
-            <!-- <span class="flex items-center gap-1">
-                <i class='bx bxs-star text-yellow-400 text-sm'></i> <span class="text-gray-600">4.3 (10)</span>
-            </span> -->
-            <div class="flex gap-3  text-gray-600 text-sm">
-                <span class="flex items-center gap-1">
-                    <i class='bx bxs-bed text-accent'></i> <span>{{ n.bedrooms }}</span>
-                </span>
-                <span class="flex items-center gap-1">
-                    <i class='bx bxs-bath text-accent'></i> <span>{{ n.bathrooms }}</span>
-                </span>
-                <!-- <span class="flex items-center gap-1">
-                    <i class='bx bxs-home text-accent'></i> <span>{{ n.livingRooms }}</span>
-                </span>
-                <span class="flex items-center gap-1">
-                    <i class='bx bxs-map text-accent'></i> <span>2</span>
-                </span> -->
-
+            <div class="flex gap-2 items-center">
+                <div class="flex gap-1 text-sm items-center">
+                    <i class='bx bxs-bed'></i>
+                    <span class=" text-gray-600">{{ n.bedrooms }}</span>
+                </div>
+                <div class="flex gap-1 text-sm items-center">
+                    <i class='bx bxs-bath'></i>
+                    <span class=" text-gray-600">{{ n.bedrooms }}</span>
+                </div>
             </div>
 
-            <span class=" flex items-center"> <i class="bx text-accent bxs-phone"></i><span>7628063215</span> </span>
-            <span class=" text-gray-500">{{ n.location }}</span>
-            <span class="text-gray-500 text-sm">Posted {{ n.posted }}</span>
+            <div class="flex justify-between w-full">
+                <span class="text-accent font-semibold"><span>₹10000</span><span class="text-xs">/m</span></span>
+
+                <i class='bx bx-bookmark p-2  rounded-full border hover:bg-gray-100'></i>
+
+
+            </div>
+            <span class="text-xs text-gray-600 ">{{ n.posted }}</span>
 
         </div>
-        <i
-            class='bx bxs-heart absolute top-2 right-2 opacity-80 hover:text-accent hover:opacity-100  text-3xl'></i>
+
     </RouterLink>
 </template>
 <style scoped>

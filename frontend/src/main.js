@@ -11,7 +11,9 @@ import { createNotivue } from 'notivue'
 const notivue = createNotivue(/* Options */)
 const app = createApp(App)
 app.use(notivue)
-axios.defaults.baseURL = 'https://localhost:8000/api'
+axios.defaults.baseURL = 'http://localhost:8000/api'
+axios.defaults.withCredentials = true
+
 app.use(createPinia())
 app.use(router)
 
