@@ -5,7 +5,16 @@ import PopularAreas from '@/components/HomePage/PopularAreas.vue'
 import FeaturedRentals from '@/components/HomePage/FeaturedRentals.vue'
 import WhyChooseUs from '@/components/HomePage/WhyChooseUs.vue'
 import CTA from '@/components/HomePage/CTA.vue'
+import {onMounted, ref} from 'vue'
+import { push } from "notivue";
 
+onMounted(()=>{
+    const message = localStorage.getItem('message')
+    if(message){
+        push.success(message)
+        localStorage.removeItem('message')
+    }
+})
 
 
 </script>

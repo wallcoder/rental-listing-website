@@ -112,9 +112,11 @@ const handleRequestPasswordReset =async  ()=>{
 
             
             localStorage.setItem('user', JSON.stringify(response.data.data))
-            router.push('/')
+            user.value = response.data.data
+            localStorage.setItem('message', response.data.message)
+            window.location.replace('/')
             isLoggedin.value = true;
-            push.success(response.data.message)
+            
             login.value = {
                 email: '',
                 password: '',
@@ -150,7 +152,9 @@ const handleRequestPasswordReset =async  ()=>{
             isLoggedin.value = true;
             
             localStorage.setItem('user', JSON.stringify(response.data.data))
-            router.push('/')
+            user.value = response.data.data
+            localStorage.setItem('message', response.data.message)
+            window.location.replace('/')
             
             signUp.value = {
                 name: '',
@@ -222,10 +226,12 @@ const handleRequestPasswordReset =async  ()=>{
         try{
             const response = await axios.post('/logout')
             localStorage.removeItem('user')
-
-            push.success(response.data.message)
+            user.value = null
+            localStorage.setItem('message', response.data.message)
+            
             isLoggedin.value = false
-            router.push('/')
+           
+            window.location.replace('/')
         }catch(err){
             console.log(err)
         }

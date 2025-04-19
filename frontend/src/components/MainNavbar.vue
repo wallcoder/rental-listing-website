@@ -7,7 +7,7 @@ import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import { onClickOutside } from '@vueuse/core'
 
-const { isLoggedin} = storeToRefs(useAuthStore())
+const { isLoggedin, user} = storeToRefs(useAuthStore())
 const {logout} = useAuthStore()
 const isOpenSidebar = ref(false)
 const isOpenMenu = ref(false)
@@ -49,7 +49,8 @@ onClickOutside(dropdown, (event)=>{
       <!-- LOGO -->
       <div class="flex items-center gap-6">
          <Logo />
-
+        
+         
       </div>
 
 
@@ -60,7 +61,7 @@ onClickOutside(dropdown, (event)=>{
          <RouterLink to="/user/login" class="p-[8px] px-5 rounded-3xl hover:bg-gray-100" v-if="!isLoggedin">Sign In
          </RouterLink>
          <ButtonLink content="Create Post" extraStyle="" link="/create-post" />
-         <div class="flex items-center gap-1 " v-if="isLoggedin">
+         <div class="flex items-center gap-1 " v-if="isLoggedin && user">
             <div v-if="isLoggedin"
                class="flex items-center justify-center hover:bg-gray-100 rounded-full p-2  cursor-pointer border active:scale-90">
                <i class='bx bx-user text-2xl '></i>
@@ -72,12 +73,12 @@ onClickOutside(dropdown, (event)=>{
                   class='bx bx-chevron-down text-2xl  rounded-full border hover:bg-gray-100 cursor-pointer active:scale-75'></i>
 
                <!-- MENU -->
-               <div ref="dropdown" class="absolute z-20 menu top-8 right-0 shadow-md p-2 flex flex-col  rounded-lg" v-if="isOpenMenu">
+               <div ref="dropdown" class="absolute z-20 menu top-8 bg-white right-0 shadow-md p-2 flex flex-col  rounded-lg" v-if="isOpenMenu">
                   <div @click="isOpenMenu=false" class="flex gap-2 items-center rounded-lg hover:bg-gray-100 p-2 cursor-pointer">
                      <i class='bx bx-user text-3xl rounded-full p-2 bg-gray-100 '></i>
-                     <div class="flex flex-col">
-                        <div>Sam Miller</div>
-                        <span class="text-gray-400">sammiller@gmail.com</span>
+                     <div class="flex flex-col" v-if="user">
+                        <div>{{ user.name }}</div>
+                        <span class="text-gray-400">{{ user.email }}</span>
                      </div>
                   </div>
                   <div @click="isOpenMenu=false" class="mt-2 flex flex-col font-semibold">
