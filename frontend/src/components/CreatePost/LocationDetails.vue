@@ -4,8 +4,8 @@
     import {storeToRefs} from 'pinia'
     import {useCreatePostStore} from '@/stores/createPost'
     const createPost = useCreatePostStore()
-    const { autocompleteInput, autocompleteInstance, markers, location} = storeToRefs(createPost)
-    const {addMarker, removeMarker, loader} = createPost
+    const { autocompleteInput, autocompleteInstance, markers, location, address} = storeToRefs(createPost)
+    const {addMarker, removeMarker, loader, extractAddress} = createPost
     const zoom = 15
     const api = ref(import.meta.env.VITE_MAP_API)
     onMounted(async () => {
@@ -20,13 +20,14 @@
 
         autocompleteInstance.value.addListener('place_changed', () => {
             const place = autocompleteInstance.value.getPlace()
-
+            console.log("place: ", place)
+            extractAddress(place)
             if (place.geometry && place.geometry.location) {
                 const lat = place.geometry.location.lat()
                 const lng = place.geometry.location.lng()
 
                 location.value = { lat, lng }
-
+                
                 markers.value = [{
                     position: { lat, lng },
                     title: place.formatted_address || `Marker at ${lat}, ${lng}`
@@ -39,7 +40,8 @@
 <template>
     <div class="rounded-xl bg-white p-4 flex flex-col gap-2 border border-gray-300">
         <div>
-            <label for="autocomplete" class="block mb-1">Location</label>
+            <label for="autocomplete" class="block mb-1">Location<span class="text-accent">*</span></label>
+           
             <input id="autocomplete" ref="autocompleteInput" type="text" placeholder="Enter address"
                 class="input w-full px-4 py-2 border rounded" />
         </div>
