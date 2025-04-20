@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Middleware\JwtAuthenticate;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,13 +13,15 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, "register"]);
 Route::post('/login', [AuthController::class, "login"]);
-Route::get('/test', function(){
-    return response()->json(['message'=>'Success']);
+Route::get('/test', function(Request $request){
+    $user = $request->user();
+    return response()->json(['message'=>'Success', 'data'=>$user]);
 })->middleware(JwtAuthenticate::class);
 
 Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::get('/me', [AuthController::class, 'checkToken']);
+    Route::post('/post/create', [PostController::class, 'store']);
 
 });
-
+Route::get('/posts', [PostController::class, "index"]);
 Route::post('/logout', [AuthController::class, "logout"]);

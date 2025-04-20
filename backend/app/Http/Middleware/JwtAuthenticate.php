@@ -44,8 +44,9 @@ class JwtAuthenticate
                 ], 401);
             }
 
-           
-            // auth()->setUser($user);
+            /** @var \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard $guard */
+            $guard = auth();
+            $guard->setUser($user);
 
             return $next($request);
 

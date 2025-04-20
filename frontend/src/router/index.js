@@ -8,7 +8,8 @@ import RequestPasswordReset from '../views/RequestPasswordReset.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import ItemPage from '../views/ItemPage.vue'
 import CreatePost from '../views/CreatePost.vue'
-
+import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +34,8 @@ const router = createRouter({
           path: '/create-post',
           name: 'create-post',
           component: CreatePost,
-          props: true
+          props: true,
+          meta: {requiresAuth: true}
         },
         {
           path: '/rental-properties/:slug',
@@ -44,28 +46,69 @@ const router = createRouter({
         {
           path: '/user/login',
           name: 'user-login',
-          component: UserLogin
+          component: UserLogin,
+          meta: {requiresLogout: true}
         },
         {
           path: '/user/signup',
           name: 'user-signup',
-          component: UserSignup
+          component: UserSignup,
+          meta: {requiresLogout: true}
         },
         {
           path: '/user/request-password-reset',
           name: 'request-password-reset',
-          component: RequestPasswordReset
+          component: RequestPasswordReset,
+          meta: {requiresLogout: true}
         },
         {
           path: '/user/reset-password/:token/:email',
           name: 'reset-password',
           component: ResetPassword,
-          props: true
+          props: true,
+          meta: {requiresLogout: true}
         }
       ]
     },
     
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth', // Smooth scroll
+      };
+    }
+    return savedPosition || { top: 0 };
+  },
+})
+
+router.beforeEach(async (to, from, next)=>{
+  const {checkToken} = useAuthStore();
+
+  if(to.meta.requiresAuth  ){
+
+    const check = await checkToken(true)
+    if(!check){
+      
+      return next('/user/login')
+    }
+
+    next()
+   
+  }
+
+  if(to.meta.requiresLogout){
+    const check =await checkToken(true)
+    if(check){
+      return next('/')
+    }
+
+    next()
+  }
+
+  next()
+  
 })
 
 export default router
