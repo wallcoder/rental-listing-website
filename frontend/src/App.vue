@@ -14,7 +14,7 @@ onMounted(()=>{
 </script>
 
 <template>
-  <div class="">
+  <div class="min-w-[360px] max-w-[1920px] my-0 mx-auto">
     <RouterView />
     <Notivue v-slot="item">
       <Notification :item="item" />

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SaveController;
 use App\Http\Middleware\JwtAuthenticate;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,7 +22,11 @@ Route::get('/test', function(Request $request){
 Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::get('/me', [AuthController::class, 'checkToken']);
     Route::post('/post/create', [PostController::class, 'store']);
+    Route::post('/save/create/{id}', [SaveController::class, 'store']);
+    Route::get('/saves', [SaveController::class, 'index']);
 
 });
 Route::get('/posts', [PostController::class, "index"]);
+Route::get('/item/{slug}', [PostController::class, "show"]);
+Route::get('/browse', [PostController::class, "browse"]);
 Route::post('/logout', [AuthController::class, "logout"]);

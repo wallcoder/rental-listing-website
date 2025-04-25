@@ -82,6 +82,7 @@ onClickOutside(dropdown, (event)=>{
                      </div>
                   </div>
                   <div @click="isOpenMenu=false" class="mt-2 flex flex-col font-semibold">
+                     <RouterLink to="/user/saves" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-bookmark text-xl'></i><span>Saved</span> </RouterLink>
                      <button @click="logout()" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-log-out text-xl'></i><span>Log
                         out</span> </button>
 

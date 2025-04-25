@@ -47,7 +47,7 @@
                 <p class="text-center text-gray-500">Some of our popular areas</p>
             </div>
             <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:px-18 lg:px-24">
-                <RouterLink v-for="n in 3" :key="n" class=" rounded-lg overflow-hidden relative group">
+                <RouterLink to="/browse" v-for="n in 3" :key="n" class=" rounded-lg overflow-hidden relative group">
                     <img src="@/assets/house.jpg" alt=""
                         class="object-cover rounded-lg brightness-[0.6] group-hover:brightness-[0.7] group-hover:scale-110 transition-all duration-500 ">
 

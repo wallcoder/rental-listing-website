@@ -30,4 +30,10 @@ class Post extends Model
     public function shop(): HasOne{
         return $this->hasOne( Shop::class);
     }
+
+    public function saves(): HasMany{
+        return $this->hasMany(Save::class);
+    }
+
+    
 }

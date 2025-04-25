@@ -1,7 +1,5 @@
 <script setup>
-import { ref } from 'vue'
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+
 import { RouterLink } from 'vue-router';
 import "swiper/css";
 import "swiper/css/navigation";
@@ -50,16 +48,15 @@ function timeAgo(timestamp) {
     }
 }
 
-console.log(timeAgo("2025-04-20T12:17:24.000000Z")); // should say "just now"
 
 
 </script>
 <template>
-    <RouterLink to="/rental-properties/asdsdfgasdsad" v-motion-fade-visible-once
+    <RouterLink :to="`/rental-properties/${n.slug}`" v-motion-fade-visible-once
         class="flex flex-col relative cursor-pointer  border hover:shadow-lg transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
         v-for="n in items" :key="n.id">
         <!-- IMAGE -->
-
+        
         <div class="relative">
             <img :src="`${api}/${n.thumbnail}`" class="w-full h-[250px] object-cover" :alt="n.id">
 
@@ -73,8 +70,8 @@ console.log(timeAgo("2025-04-20T12:17:24.000000Z")); // should say "just now"
         </div>
         <!-- ATTRIBUTES -->
         <div v-if="n?.category == 'house'" class="px-4 py-2 flex flex-col">
-            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }}
-                <span v-if="n.location.locality">,</span> {{
+            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }},
+                 {{
                     n.location.city }}</span>
             <span class="text-sm text-gray-600" v-else>Location Unavilable</span>
 
@@ -92,7 +89,7 @@ console.log(timeAgo("2025-04-20T12:17:24.000000Z")); // should say "just now"
             <div class="flex justify-between w-full">
                 <span class="text-accent font-semibold"><span>₹{{ n.house?.price }}</span><span
                         class="text-xs">/m</span></span>
-
+                <!-- BOOKMARK -->
                 <i class='bx bx-bookmark p-2  rounded-full border hover:bg-gray-100'></i>
 
 
@@ -101,8 +98,8 @@ console.log(timeAgo("2025-04-20T12:17:24.000000Z")); // should say "just now"
 
         </div>
         <div v-else class="px-4 py-2 flex flex-col">
-            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }}
-                <span v-if="n.location.locality">,</span> {{
+            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }},
+                 {{
                     n.location.city }}</span>
             <span class="text-sm text-gray-600" v-else>Location Unavilable</span>
 
@@ -124,7 +121,7 @@ console.log(timeAgo("2025-04-20T12:17:24.000000Z")); // should say "just now"
             <div class="flex justify-between w-full">
                 <span class="text-accent font-semibold"><span>₹{{ n.shop?.price }}</span><span
                         class="text-xs">/m</span></span>
-
+                <!-- BOOKMARK -->
                 <i class='bx bx-bookmark p-2  rounded-full border hover:bg-gray-100'></i>
 
 

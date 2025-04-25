@@ -28,6 +28,15 @@ const router = createRouter({
         {
           path: '/browse',
           name: 'browse',
+          props: (route)=> ({
+            street: route.query.street,
+            locality: route.query.locality,
+            city: route.query.city,
+            state: route.query.state,
+            pincode: route.query.pincode,
+            country: route.query.country,
+
+          }),
           component: BrowsePage
         },
         {

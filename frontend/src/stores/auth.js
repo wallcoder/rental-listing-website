@@ -115,7 +115,7 @@ const handleRequestPasswordReset =async  ()=>{
             })
 
             
-            localStorage.setItem('user', JSON.stringify(response.data.data))
+            // localStorage.setItem('user', JSON.stringify(response.data.data))
             user.value = response.data.data
             localStorage.setItem('message', response.data.message)
             window.location.replace('/')
@@ -157,7 +157,7 @@ const handleRequestPasswordReset =async  ()=>{
 
             isLoggedin.value = true;
             
-            localStorage.setItem('user', JSON.stringify(response.data.data))
+            // localStorage.setItem('user', JSON.stringify(response.data.data))
             user.value = response.data.data
             localStorage.setItem('message', response.data.message)
             window.location.replace('/')
@@ -213,16 +213,17 @@ const handleRequestPasswordReset =async  ()=>{
         try{
             startLoading()
             const response = await axios.get('/me')
-            localStorage.setItem('user', JSON.stringify(response.data.data))
+            // localStorage.setItem('user', JSON.stringify(response.data.data))
             isLoggedin.value = true
-            user.value = JSON.parse(localStorage.getItem('user'))
-            console.log("user: ", user.value)
+            user.value = response.data.data
+            // console.log("user: ", user.value)
             return true
         }catch(err){
             // console.log(err)
             if(err.response.status == 401){
                 if(init){
-                    console.log("HELLO")
+                    user.value = null
+                    isLoggedin.value = false
                     return false
                 }
                 // push.error(`${err.response.data.message}. You are logged out`)
@@ -238,9 +239,9 @@ const handleRequestPasswordReset =async  ()=>{
     const verifyToken = async(init=false)=>{
         try{
             const response = await axios.get('/me')
-            localStorage.setItem('user', JSON.stringify(response.data.data))
+           
             isLoggedin.value = true
-            user.value = JSON.parse(localStorage.getItem('user'))
+            user.value = response.data.data
             console.log("user: ", user.value)
             return true
         }catch(err){
@@ -263,7 +264,7 @@ const handleRequestPasswordReset =async  ()=>{
         try{
             startLoading()
             const response = await axios.post('/logout')
-            localStorage.removeItem('user')
+            
             user.value = null
             localStorage.setItem('message', response.data.message)
             
