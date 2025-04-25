@@ -12,9 +12,9 @@ const { isBrowsePage } = storeToRefs(useUtilStore())
 
          <span class="text-sm text-gray-600 ">&copy;2025</span>
          <div class="flex gap-4 items-center text-gray-600">
-            <RouterLink to="sad" class="text-sm hover:underline">Terms of Service</RouterLink>
+            <RouterLink to="/" class="text-sm hover:underline">Terms of Service</RouterLink>
             
-            <RouterLink to="sad" class="text-sm hover:underline">Privacy Policy</RouterLink>
+            <RouterLink to="/" class="text-sm hover:underline">Privacy Policy</RouterLink>
             <span></span>
 
          </div>

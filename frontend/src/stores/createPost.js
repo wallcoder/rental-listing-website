@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { Loader } from '@googlemaps/js-api-loader'
-
+import axios from "axios";
 import { ref } from "vue";
 import { push } from 'notivue'
-
+import { useRouter } from "vue-router";
 export const useCreatePostStore = defineStore('createPost', ()=>{
+    const router = useRouter();
     const category  = ref('house')
     const type = ref('concrete')
     const images = ref([])
@@ -270,20 +271,21 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
         for (let [key, value] of formData.entries()) {
                 console.log(`${key}:`, value);
             }
-            const response = await fetch('https://your-api-url.com/api/posts', {
-                method: 'POST',
-                body: formData
-            })
-    
-            if (!response.ok) {
-                const errorData = await response.json()
-                push.error(errorData.message || 'Failed to submit post.')
-                return
-            }
-    
-            push.success('Post submitted successfully.')
+            const response = await axios.post('/post/create', 
+                formData
+            )
+
+            
+            console.log("data: ", response.data.message);
+            // if (!response.ok) {
+            //     const errorData = await response.json()
+            //     push.error(errorData.message || 'Failed to submit post.')
+            //     return
+            // }
+            localStorage.setItem('message', response.data.message )
+            router.push('/')
         } catch (error) {
-            console.error('Submission Error:', error)
+            console.error('Submission Error:', error.response.data.message)
             push.error('Something went wrong while submitting.')
         }
     }

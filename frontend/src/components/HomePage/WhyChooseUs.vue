@@ -24,10 +24,10 @@ const why = ref([
 <template>
     <!-- FEATURED RENTALS -->
     <div class="flex flex-col gap-8 py-10 border-gray-300">
-        <h1 class="text-3xl font-semibold text-center ">Why Use Our <span class="text-accent">Platform?</span></h1>
+        <h1 class="text-3xl font-semibold text-center " v-motion-fade-visible-once >Why Use Our <span class="text-accent">Platform?</span></h1>
 
         <div class="w-full  grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:px-18 lg:px-24">
-            <div class="bg-gray-100 relative rounded-lg p-6 flex flex-col gap-2" v-for="(n, i) of why" :key="i">
+            <div v-motion-fade-visible-once class="bg-gray-100 relative rounded-lg p-6 flex flex-col gap-2" v-for="(n, i) of why" :key="i">
                 <div class="rounded-full ">
                     <i :class="n.icon" class='bx  bg-white p-2 text-3xl shadow-lg text-green-500 rounded-full'></i>
                 </div>

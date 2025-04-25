@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->enum('category', ['house', 'shop']);
+            $table->string('type');
+            $table->string('thumbnail');
+            $table->string('owner_name');
+            $table->string('phone');
+            $table->string('email');
+            $table->string('slug');
+            $table->enum('status', ['active', 'expired', 'deleted', 'inactive'])->default('active');
+            $table->date('expiry_date')->nullable();
             $table->timestamps();
         });
     }

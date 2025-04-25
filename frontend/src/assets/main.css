@@ -5,6 +5,7 @@
 *{
     font-family: "Outfit", sans-serif;
     transition: all 100ms linear;
+    box-sizing: border-box;
 }
 
 .v-enter-active,

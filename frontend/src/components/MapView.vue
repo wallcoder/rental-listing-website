@@ -18,6 +18,7 @@ const mapId = import.meta.env.VITE_MAP_ID
 
 <template>
     <section class="w-full h-full">
+        
         <GoogleMap :api-key="api" style="width:100%; height:100%;" :center="location" :zoom="zoom" :mapId="mapId">
             <!-- <Marker v-for="(marker, index) in markers" :key="index" :options="marker"  /> -->
             <!-- <AdvancedMarker :options="markerOptions" :pin-options="pinOptions"/> -->

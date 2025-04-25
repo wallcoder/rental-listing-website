@@ -9,18 +9,32 @@ import ItemCard from '@/components/ItemCard.vue';
 import MapView from '@/components/MapView.vue';
 import { useMapStore } from '@/stores/map'
 import { useUtilStore } from '@/stores/util';
+import { usePostStore } from '@/stores/post'
+
 const mapStore = useMapStore()
+const { rentals, isLoadingBrowse } = storeToRefs(usePostStore());
+const { getRentals } = usePostStore();
 const { isBrowsePage } = storeToRefs(useUtilStore())
 const { autocompleteInput, searchLoc, autocompleteInstance, markers, location } = storeToRefs(mapStore)
 const { loader } = mapStore;
 const suggestions = ref([]);
 const showSuggestions = ref(false);
 
+const props = defineProps({
+   street: { type: String },
+   locality: { type: String },
+   city: { type: String },
+   state: { type: String },
+   pincode: { type: String },
+   country: { type: String },
+})
 
 
 
 
 onMounted(async () => {
+
+   getRentals(props.street, props.locality, props.city, props.state, props.pincode, props.country)
    const placesLib = await loader.importLibrary('places')
    // isBrowsePage.value = true;
    const { Autocomplete } = placesLib
@@ -55,9 +69,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-   <section class="flex flex-col bg-white">
+   <section class="flex flex-col bg-white ">
+
+    
+
       <!-- Search and filters -->
-      <div class="px-[12%] py-2 bg-bg flex gap-2 items-center relative">
+      <div class=" py-2 bg-bg flex gap-2 items-center relative px-[4%]  lg:px-[8%]">
          <!-- Location Search -->
 
          <div class="relative flex items-center bg-white rounded-3xl border w-[350px]">
@@ -68,18 +85,11 @@ onUnmounted(() => {
                <i class="bx bx-search px-4 text-xl"></i>
             </button>
 
-            <!-- Suggestions dropdown -->
-            <ul v-if="showSuggestions && suggestions.length"
-               class="absolute top-full mt-1 left-0 w-full bg-white border rounded-md z-50 shadow-md">
-               <li v-for="(suggestion, index) in suggestions" :key="index"
-                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer" @click="selectSuggestion(suggestion)">
-                  {{ suggestion }}
-               </li>
-            </ul>
+
          </div>
 
          <!-- Sort Filter -->
-         <div class="flex items-center gap-2 bg-white py-1 px-3 rounded-3xl">
+         <div class=" items-center gap-2 bg-white py-1 px-3 rounded-3xl hidden md:flex">
             <label for="sort">Sort by</label>
             <select name="sort" id="sort" class="outline-none">
                <option value="0">Recommended</option>
@@ -90,20 +100,49 @@ onUnmounted(() => {
          </div>
 
          <!-- Filters button -->
-         <div class="flex items-center gap-2 bg-white py-1 px-3 rounded-3xl ">
+         <div class="flex items-center gap-2 bg-white py-1 px-3 rounded-3xl cursor-pointer hover:bg-gray-100">
             <span>Filters</span>
-            <i class="bx bx-filter text-xl cursor-pointer"></i>
+            <i class="bx bx-filter text-xl "></i>
          </div>
       </div>
 
       <!-- Content Section -->
 
       <!-- Catalog -->
+      <section v-if="isLoadingBrowse" class="flex flex-col bg-white">
+         <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 py-6 px-[4%] lg:px-[8%]">
+            <div v-for="n in 8" :key="n" class="h-64 bg-gray-100 rounded-lg relative overflow-hidden">
+               <div
+                  class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent">
+               </div>
+            </div>
+         </div>
+      </section>
+      <div v-else>
+         <div v-if="rentals?.data.length > 0">
+            <div
+               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4  py-6 px-[4%]  lg:px-[8%]">
 
-      <div class="grid grid-cols-4 gap-4 px-[12%] py-2">
-         <ItemCard />
+               <ItemCard :items="rentals?.data" />
 
+
+            </div>
+            <!-- Pagination -->
+            <div class="flex items-center justify-center py-8">
+               
+            </div>
+
+         </div>
+
+         <div v-else class="flex flex-col gap-6 items-center justify-center py-10">
+
+            <img src="/bg_mt.png" class="w-60" alt="">
+            <h1 class="text-2xl  text-center text-gray-500">No Items Found!! Come back later</h1>
+
+         </div>
       </div>
+
 
 
 

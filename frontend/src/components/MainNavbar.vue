@@ -73,7 +73,7 @@ onClickOutside(dropdown, (event)=>{
                   class='bx bx-chevron-down text-2xl  rounded-full border hover:bg-gray-100 cursor-pointer active:scale-75'></i>
 
                <!-- MENU -->
-               <div ref="dropdown" class="absolute z-20 menu top-8 bg-white right-0 shadow-md p-2 flex flex-col  rounded-lg" v-if="isOpenMenu">
+               <div ref="dropdown" class="absolute z-20 menu top-9 bg-white right-0 shadow-md p-2 flex flex-col  rounded-lg" v-if="isOpenMenu">
                   <div @click="isOpenMenu=false" class="flex gap-2 items-center rounded-lg hover:bg-gray-100 p-2 cursor-pointer">
                      <i class='bx bx-user text-3xl rounded-full p-2 bg-gray-100 '></i>
                      <div class="flex flex-col" v-if="user">
@@ -82,6 +82,7 @@ onClickOutside(dropdown, (event)=>{
                      </div>
                   </div>
                   <div @click="isOpenMenu=false" class="mt-2 flex flex-col font-semibold">
+                     <RouterLink to="/user/saves" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-bookmark text-xl'></i><span>Saved</span> </RouterLink>
                      <button @click="logout()" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-log-out text-xl'></i><span>Log
                         out</span> </button>
 
