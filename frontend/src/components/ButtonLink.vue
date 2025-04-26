@@ -20,6 +20,8 @@ const props = defineProps({
         default: ''
     },
 
+    
+
     fun: {
         type: Function,
         default: () => {
