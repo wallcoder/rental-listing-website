@@ -5,7 +5,12 @@ export const useItemStore = defineStore('item', ()=>{
 
     const isLoadingItem = ref(false)
     const item = ref({});
+
     const isOpenSlideshow = ref(false);
+    const location = ref({
+        lat: 40.689247,
+        lng: -74.044502
+    })
     const getItem = async (slug)=>{
         try{
             isLoadingItem.value = true

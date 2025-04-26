@@ -54,7 +54,7 @@ class PostController extends Controller
             $state = $request->query('state');
             $pincode = $request->query('pincode');
             $country = $request->query('country');
-            $pag = $request->query('limit', 1);
+            $pag = $request->query('limit', 14);
     
             $post = Post::select('id', 'user_id', 'category', 'thumbnail', 'status', 'slug', 'created_at')
                 ->whereHas('location', function($query) use ($street, $locality, $city, $state, $pincode, $country) {
