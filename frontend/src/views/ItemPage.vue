@@ -254,8 +254,8 @@ const filteredImages = computed(() => {
                         </p>
                         <p class="text-gray-700 " v-else> {{ item.shop?.description }}
                         </p>
-                        <div v-if="item.category == 'house'"
-                            class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-2 text-xl  py-4   rounded-lg ">
+                        <div  v-if="item.category == 'house'"
+                            class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-2 text-lg  py-4   rounded-lg ">
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Monthly Rent</h3>
                                 <span>₹{{ item.house?.price }}</span>
@@ -296,7 +296,7 @@ const filteredImages = computed(() => {
                             </div>
                         </div>
                         <div v-else
-                            class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-2 text-xl  py-4   rounded-lg ">
+                            class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-2 text-lg  py-4   rounded-lg ">
 
 
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
@@ -398,7 +398,7 @@ const filteredImages = computed(() => {
 
                         <Swiper  loop :modules="[Navigation]" navigation class="h-[90vh]">
                             <SwiperSlide v-for="i in item.image" :key="i">
-                                <img :src="`${imageApi}/${i.image}`" class="object-cover" alt="">
+                                <img :src="`${imageApi}/${i.image}`" class="object-cover w-full h-full" alt="" >
                             </SwiperSlide>
                         </Swiper>
                     </div>

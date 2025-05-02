@@ -41,8 +41,8 @@
             </div>
         </div>
 
-        <div v-motion-fade-visible-once v-else class="flex flex-col gap-4 py-10 border-b-2 border-gray-200 ">
-            <div>
+        <div  class="flex flex-col gap-4 py-10 border-b-2 border-gray-200 ">
+        <div>
                 <h1 class="text-3xl font-semibold text-center">Popular <span class="text-accent">Areas</span></h1>
                 <p class="text-center text-gray-500">Some of our popular areas</p>
             </div>

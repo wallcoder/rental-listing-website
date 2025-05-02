@@ -49,7 +49,7 @@ onMounted(() => {
             </div>
         </div>
 
-        <div v-motion-fade-visible-once v-else class="flex flex-col gap-4 v-else py-10 border-b-2 border-gray-200">
+        <div  class="flex flex-col gap-4 v-else py-10 border-b-2 border-gray-200">
             
             <h1 class="text-3xl font-semibold text-center">Recent <span class="text-accent">Posts</span></h1>
             <div v-if="featuredRentals.length > 0">

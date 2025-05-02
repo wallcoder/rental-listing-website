@@ -52,7 +52,7 @@ function timeAgo(timestamp) {
 
 </script>
 <template>
-    <RouterLink :to="`/rental-properties/${n.slug}`" v-motion-fade-visible-once
+    <RouterLink :to="`/rental-properties/${n.slug}`" 
         class="flex flex-col relative cursor-pointer  border hover:shadow-lg transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
         v-for="n in items" :key="n.id">
         <!-- IMAGE -->
