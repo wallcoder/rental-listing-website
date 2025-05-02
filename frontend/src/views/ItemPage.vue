@@ -398,7 +398,7 @@ const filteredImages = computed(() => {
 
                         <Swiper  loop :modules="[Navigation]" navigation class="h-[90vh]">
                             <SwiperSlide v-for="i in item.image" :key="i">
-                                <img :src="`${imageApi}/${i.image}`" class="object-cover" alt="">
+                                <img :src="`${imageApi}/${i.image}`" class="object-cover h-full w-full" alt="">
                             </SwiperSlide>
                         </Swiper>
                     </div>
