@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('category', ['house', 'shop']);
             $table->string('type');
             $table->string('thumbnail');
-            $table->string('owner_name');
+            $table->string('owner_name')->nullable;
             $table->string('phone');
             $table->string('email');
             $table->string('slug');

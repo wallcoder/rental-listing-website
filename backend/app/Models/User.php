@@ -70,4 +70,10 @@ class User extends Authenticatable implements JWTSubject
     public function saves(): HasMany{
         return $this->hasMany(Save::class);
     }
+
+    public function canAccessFilament(): bool{
+
+        return $this->hasRole('admin');
+
+    }
 }

@@ -62,10 +62,10 @@ onClickOutside(dropdown, (event)=>{
          </RouterLink>
          <ButtonLink content="Create Post" extraStyle="" link="/create-post" />
          <div class="flex items-center gap-1 " v-if="isLoggedin && user">
-            <div v-if="isLoggedin"
-               class="flex items-center justify-center hover:bg-gray-100 rounded-full p-2  cursor-pointer border active:scale-90">
+            <RouterLink to="/user" v-if="isLoggedin"  
+               class="flex items-center  justify-center hover:bg-gray-100 rounded-full p-2  cursor-pointer border active:scale-90">
                <i class='bx bx-user text-2xl '></i>
-            </div>
+            </RouterLink>
 
             
             <div class="relative  ">
@@ -76,10 +76,10 @@ onClickOutside(dropdown, (event)=>{
                <div ref="dropdown" class="absolute z-20 menu top-9 bg-white right-0 shadow-md p-2 flex flex-col  rounded-lg" v-if="isOpenMenu">
                   <div @click="isOpenMenu=false" class="flex gap-2 items-center rounded-lg hover:bg-gray-100 p-2 cursor-pointer">
                      <i class='bx bx-user text-3xl rounded-full p-2 bg-gray-100 '></i>
-                     <div class="flex flex-col" v-if="user">
+                     <RouterLink to="/user" class="flex flex-col" v-if="user">
                         <div>{{ user.name }}</div>
                         <span class="text-gray-400">{{ user.email }}</span>
-                     </div>
+                     </RouterLink>
                   </div>
                   <div @click="isOpenMenu=false" class="mt-2 flex flex-col font-semibold">
                      <RouterLink to="/user/saves" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-bookmark text-xl'></i><span>Saved</span> </RouterLink>

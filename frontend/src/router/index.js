@@ -8,8 +8,14 @@ import RequestPasswordReset from '../views/RequestPasswordReset.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import ItemPage from '../views/ItemPage.vue'
 import CreatePost from '../views/CreatePost.vue'
+import UserPage from '@/views/UserPage.vue'
+import Profile from '@/components/UserPage/Profile.vue'
+import Saved from '@/components/UserPage/Saved.vue'
+import Posts from '@/components/UserPage/Posts.vue'
+
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,7 +82,34 @@ const router = createRouter({
           component: ResetPassword,
           props: true,
           meta: {requiresLogout: true}
-        }
+        },
+
+        {
+          path: '/user',
+          name: 'user-page',
+          component: UserPage,
+          
+          meta: {requiresAuth: true},
+          children: [
+            {
+              path: '',
+              name: 'user-profile',
+              component: Profile
+            },
+            {
+              path: '/posts',
+              name: 'user-posts',
+              component: Posts
+            },
+            {
+              path: '/saved',
+              name: 'user-saved',
+              component: Saved
+            },
+            
+          ]
+        },
+        
       ]
     },
     

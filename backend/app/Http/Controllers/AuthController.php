@@ -44,9 +44,9 @@ class AuthController extends Controller
             'name'=>$user->name,
             'email'=>$user->email
         ];
-      
+        $ttl = config('jwt.ttl');
 
-        return response()->json(['success'=>true, 'message'=>'User Created Successfully', 'data'=>$result])->cookie('token', $token, 15, '/', null, false,true, false, 'Lax' );
+        return response()->json(['success'=>true, 'message'=>'User Created Successfully', 'data'=>$result])->cookie('token', $token, $ttl, '/', null, false,true, false, 'Lax' );
 
     }catch(Exception $e ){
         return response()->json(['success'=>false, 'message'=>$e->getMessage()]);
@@ -109,8 +109,8 @@ class AuthController extends Controller
                 'email'=>$user->email,
                 
             ];
-
-            return response()->json(['success'=>true, 'message'=>'Login Successful', 'data'=>$result], 200)->cookie('token', $token, 15, '/', null, false,true, false, 'Lax' );
+            $ttl = config('jwt.ttl'); // returns JWT_TTL value
+            return response()->json(['success'=>true, 'message'=>'Login Successful', 'data'=>$result], 200)->cookie('token', $token, $ttl, '/', null, false,true, false, 'Lax' );
 
         }catch(Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage()]);
