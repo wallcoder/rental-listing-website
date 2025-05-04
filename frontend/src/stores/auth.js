@@ -10,7 +10,9 @@ export const useAuthStore = defineStore('auth', ()=>{
     const user = ref(null)
     const isLoggedin = ref()
     const isLoadingLogin = ref(false)
+    const isLoadingEditName = ref(false)
     const isLoadingSignup = ref(false)
+    const isLoadingChangePassword = ref(false)
     const router = useRouter()
     const login = ref({
         email: '',
@@ -248,7 +250,7 @@ const handleRequestPasswordReset =async  ()=>{
             // console.log(err)
             if(err.response.status == 401){
                 if(init){
-                    console.log("HELLO")
+                    
                     return false
                 }
                     
@@ -278,9 +280,10 @@ const handleRequestPasswordReset =async  ()=>{
         }
     }
     
-    return {login, signUp, user, reqPassReset, resetPassword, isLoggedin, isLoadingLogin, isLoadingSignup,
+    return {login, signUp, user, reqPassReset, resetPassword, isLoggedin, isLoadingLogin,
+         isLoadingSignup, isLoadingEditName, isLoadingChangePassword,
         
-        logout,
+        logout, startLoading, finishLoading,
         handleLogin, handleSignUp, setTimer, handleResetPassword, handleRequestPasswordReset, checkToken}
 
 })

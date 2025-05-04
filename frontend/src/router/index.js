@@ -97,12 +97,12 @@ const router = createRouter({
               component: Profile
             },
             {
-              path: '/posts',
+              path: 'posts',
               name: 'user-posts',
               component: Posts
             },
             {
-              path: '/saved',
+              path: 'saved',
               name: 'user-saved',
               component: Saved
             },

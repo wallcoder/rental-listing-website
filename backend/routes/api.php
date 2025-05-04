@@ -21,6 +21,9 @@ Route::get('/test', function(Request $request){
 
 Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::get('/me', [AuthController::class, 'checkToken']);
+    Route::put('/user/edit-name', [AuthController::class, 'editName']);
+    Route::delete('/user/delete-account', [AuthController::class, 'deleteAccount']);
+    Route::put('/user/change-password', [AuthController::class, 'changePassword']);
     Route::post('/post/create', [PostController::class, 'store']);
     Route::post('/save/create/{id}', [SaveController::class, 'store']);
     Route::get('/saves', [SaveController::class, 'index']);

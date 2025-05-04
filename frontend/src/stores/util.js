@@ -8,6 +8,7 @@ export const useUtilStore = defineStore('util',()=>{
     const width = ref(0);
     const isVisible = ref(false);
     let interval = null;
+    const isOpen = ref(true);
 
     const startLoading = () => {
        
@@ -38,5 +39,5 @@ export const useUtilStore = defineStore('util',()=>{
     const toggleFilterSidebar = ()=>{
         isOpenFilterSidebar.value = !isOpenFilterSidebar.value
     }
-    return {isOpenFilterSidebar, startLoading, finishLoading, isVisible, width, isBrowsePage, toggleFilterSidebar}
+    return {isOpenFilterSidebar, startLoading, finishLoading, isOpen, isVisible, width, isBrowsePage, toggleFilterSidebar}
 })

@@ -250,10 +250,7 @@ const filteredImages = computed(() => {
                             <span class="text-gray-500">{{ timeAgo(item.created_at) }}</span>
                             <span class="text-gray-500 text-xs">Posted {{ formatDate(item.created_at) }}</span>
                         </div>
-                        <p class="text-gray-700 " v-if="item.category == 'house'"> {{ item.house?.description }}
-                        </p>
-                        <p class="text-gray-700 " v-else> {{ item.shop?.description }}
-                        </p>
+                        
                         <div v-if="item.category == 'house'"
                             class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-2 text-xl  py-4   rounded-lg ">
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
@@ -335,6 +332,10 @@ const filteredImages = computed(() => {
                             </div>
 
                         </div>
+                        <p class="text-gray-700 " v-if="item.category == 'house'"> {{ item.house?.description }}
+                        </p>
+                        <p class="text-gray-700 " v-else> {{ item.shop?.description }}
+                        </p>
                         <div class="flex flex-col gap-2 py-4">
                             <div class=" top-3 right-16 flex gap-2">
                                 <button @click="recenterMap()"
@@ -377,6 +378,7 @@ const filteredImages = computed(() => {
                                     <i class='bx bx-envelope'></i><span>Send Email</span></a>
                                 <ButtonLink content="Send Message" icon="bx bx-message-dots" />
                             </div>
+                            <button class="hover:underline">Report this listing</button>
                         </div>
                     </div>
                 </div>

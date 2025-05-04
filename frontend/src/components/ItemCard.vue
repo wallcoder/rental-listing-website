@@ -53,12 +53,12 @@ function timeAgo(timestamp) {
 </script>
 <template>
     <RouterLink :to="`/rental-properties/${n.slug}`" 
-        class="flex flex-col relative cursor-pointer  border hover:shadow-lg transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
+        class="flex flex-col relative cursor-pointer   transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
         v-for="n in items" :key="n.id">
         <!-- IMAGE -->
         
-        <div class="relative">
-            <img :src="`${api}/${n.thumbnail}`" class="w-full h-[250px] object-cover" :alt="n.id">
+        <div class="relative ">
+            <img :src="`${api}/${n.thumbnail}`" class="w-full  rounded-xl h-[250px] object-cover" :alt="n.id">
 
             <div v-if="n?.category == 'house'"
                 class="bg-green-400 absolute rounded-full text-2xl -bottom-4 right-4 bx bx-home-alt-2 text-white p-2">
@@ -69,7 +69,7 @@ function timeAgo(timestamp) {
             </div>
         </div>
         <!-- ATTRIBUTES -->
-        <div v-if="n?.category == 'house'" class="px-4 py-2 flex flex-col">
+        <div v-if="n?.category == 'house'" class="py-2 flex flex-col">
             <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }},
                  {{
                     n.location.city }}</span>
@@ -97,7 +97,7 @@ function timeAgo(timestamp) {
             <span class="text-xs text-gray-600 ">{{ timeAgo(n.created_at) }}</span>
 
         </div>
-        <div v-else class="px-4 py-2 flex flex-col">
+        <div v-else class="py-2 flex flex-col ">
             <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }},
                  {{
                     n.location.city }}</span>

@@ -3,8 +3,10 @@
     import {RouterLink} from 'vue-router'
     import {useAuthStore} from '@/stores/auth'
     import {storeToRefs} from 'pinia'
-    const {logout}  = useAuthStore()
+    const {logout }  = useAuthStore()
     const {user} = storeToRefs(useAuthStore())
+
+
 </script>
 <template>
     <section class="px-[4%]  lg:px-[8%] py-10">

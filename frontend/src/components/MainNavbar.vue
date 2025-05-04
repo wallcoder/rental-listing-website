@@ -52,15 +52,20 @@ onClickOutside(dropdown, (event)=>{
         
          
       </div>
+      
 
 
 
 
       <nav class="hidden md:flex items-center gap-4 ">
 
+         <RouterLink to="/browse?street=&locality=&city=&state=Mizoram&pincode=&country=India" class="p-[8px] px-5 rounded-3xl hover:bg-gray-100" >Rentals
+         </RouterLink>
          <RouterLink to="/user/login" class="p-[8px] px-5 rounded-3xl hover:bg-gray-100" v-if="!isLoggedin">Sign In
          </RouterLink>
-         <ButtonLink content="Create Post" extraStyle="" link="/create-post" />
+         
+         
+         <ButtonLink content="List Your Property" extraStyle="" link="/create-post" />
          <div class="flex items-center gap-1 " v-if="isLoggedin && user">
             <RouterLink to="/user" v-if="isLoggedin"  
                class="flex items-center  justify-center hover:bg-gray-100 rounded-full p-2  cursor-pointer border active:scale-90">
@@ -82,7 +87,8 @@ onClickOutside(dropdown, (event)=>{
                      </RouterLink>
                   </div>
                   <div @click="isOpenMenu=false" class="mt-2 flex flex-col font-semibold">
-                     <RouterLink to="/user/saves" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-bookmark text-xl'></i><span>Saved</span> </RouterLink>
+                     <RouterLink to="/user/saved" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-bookmark text-xl'></i><span>Saved</span> </RouterLink>
+                     <RouterLink to="/user/posts" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-clinic text-xl'></i><span>Posts</span> </RouterLink>
                      <button @click="logout()" class="text-left hover:bg-gray-100 p-2 rounded-lg flex items-center gap-2"><i class='bx bx-log-out text-xl'></i><span>Log
                         out</span> </button>
 

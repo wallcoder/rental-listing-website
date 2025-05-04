@@ -19,7 +19,7 @@ const { autocompleteInput, searchLoc, autocompleteInstance, markers, location } 
 const { loader } = mapStore;
 const suggestions = ref([]);
 const showSuggestions = ref(false);
-
+const isOpenFilter = ref(false);
 const props = defineProps({
    street: { type: String },
    locality: { type: String },
@@ -71,7 +71,7 @@ onUnmounted(() => {
 <template>
    <section class="flex flex-col bg-white ">
 
-    
+
 
       <!-- Search and filters -->
       <div class=" py-2 bg-bg flex gap-2 items-center relative px-[4%]  lg:px-[8%]">
@@ -89,9 +89,9 @@ onUnmounted(() => {
          </div>
 
          <!-- Sort Filter -->
-         <div class=" items-center gap-2 bg-white py-1 px-3 rounded-3xl hidden md:flex">
+         <div class=" items-center gap-2 bg-white py-1  rounded-3xl hidden md:flex">
             <label for="sort">Sort by</label>
-            <select name="sort" id="sort" class="outline-none">
+            <select name="sort" id="sort" class="outline-none   rounded-lg cursor-pointer">
                <option value="0">Recommended</option>
                <option value="0">New</option>
                <option value="0">Price High to Low</option>
@@ -100,7 +100,8 @@ onUnmounted(() => {
          </div>
 
          <!-- Filters button -->
-         <div class="flex items-center gap-2 bg-white py-1 px-3 rounded-3xl cursor-pointer hover:bg-gray-100">
+         <div class="flex items-center gap-2 bg-white py-1  rounded-3xl  cursor-pointer hover:bg-gray-100"
+            @click="isOpenFilter = true">
             <span>Filters</span>
             <i class="bx bx-filter text-xl "></i>
          </div>
@@ -130,7 +131,7 @@ onUnmounted(() => {
             </div>
             <!-- Pagination -->
             <div class="flex items-center justify-center py-8">
-               
+
             </div>
 
          </div>
@@ -141,6 +142,140 @@ onUnmounted(() => {
             <h1 class="text-2xl  text-center text-gray-500">No Items Found!! Come back later</h1>
 
          </div>
+      </div>
+
+
+      <!-- SEARCH FILTER -->
+      <div class="fixed  w-full  top-0 left-0 z-30 pointer-events-none">
+         <Transition>
+            <div class="w-full bg-black/60  h-[100vh] pointer-events-auto" @click="isOpenFilter = false"
+               v-if="isOpenFilter">
+
+            </div>
+
+
+         </Transition>
+         <Transition>
+            <div v-if="isOpenFilter"
+               class="absolute p-4 top-1/2 left-1/2 overflow-auto  w-[90vw] sm:w-[500px] rounded-lg -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg flex flex-col gap-4 pointer-events-auto transition-all duration-500 ease-out">
+               <!-- Header -->
+               <div class="flex justify-between items-center">
+                  <h2 class="text-lg font-semibold">Search Filters</h2>
+                  <i class="bx bx-x text-2xl cursor-pointer" @click="isOpenFilter = false"></i>
+               </div>
+
+               <!-- Filters Container -->
+               <div class="flex flex-col gap-4">
+
+                  <div class="flex flex-col sm:flex-row gap-4">
+                     <div class="flex flex-col flex-1">
+                        <label for="category">Sort by</label>
+                        <select id="category" class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
+                           <option value="0">Newest</option>
+                           <option value="1">Price Low to High</option>
+                           <option value="3">Price High to Low</option>
+                           
+                        </select>
+                     </div>
+
+                     
+                  </div>
+
+                  <!-- Category & Type -->
+                  <div class="flex flex-col sm:flex-row gap-4">
+                     <div class="flex flex-col flex-1">
+                        <label for="category">Category</label>
+                        <select id="category" class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
+                           <option value="0">All</option>
+                           <option value="1">House</option>
+                           <option value="2">Shop</option>
+                        </select>
+                     </div>
+
+                     <div class="flex flex-col flex-1">
+                        <label for="type">Type</label>
+                        <select id="type" class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
+                           <option value="0">All</option>
+                           <option value="1">Concrete</option>
+                           <option value="2">Assam-Type</option>
+                        </select>
+                     </div>
+                  </div>
+
+                  <!-- Price & Area -->
+                  <div class="flex flex-col sm:flex-row gap-4">
+                     <div class="flex flex-col flex-1">
+                        <label>Price(₹)</label>
+                        <div class="flex gap-2">
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>0</option>
+                              <option>500</option>
+                           </select>
+                           <span class="self-center">to</span>
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>1000</option>
+                              <option>500</option>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div class="flex flex-col flex-1">
+                        <label>Area(sq.m)</label>
+                        <div class="flex gap-2">
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>0</option>
+                              <option>500</option>
+                           </select>
+                           <span class="self-center">to</span>
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>1000</option>
+                              <option>500</option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Bedrooms & Bathrooms -->
+                  <div class="flex flex-col sm:flex-row gap-4">
+                     <div class="flex flex-col flex-1">
+                        <label>Bedrooms</label>
+                        <div class="flex gap-2">
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>0</option>
+                              <option>2</option>
+                           </select>
+                           <span class="self-center">to</span>
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>3</option>
+                              <option>5</option>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div class="flex flex-col flex-1">
+                        <label>Bathrooms</label>
+                        <div class="flex gap-2">
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>0</option>
+                              <option>1</option>
+                           </select>
+                           <span class="self-center">to</span>
+                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option>2</option>
+                              <option>4</option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Apply Button -->
+                  <div class="mt-2 flex justify-end">
+                     <ButtonLink content="Apply" />
+                  </div>
+               </div>
+            </div>
+
+         </Transition>
       </div>
 
 
