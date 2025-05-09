@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserPlan;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
@@ -29,6 +30,8 @@ class AuthController extends Controller
             'confirm_password' => 'required|same:password'
         ]);
 
+
+
         if($validator->fails()){
             return response()->json(['success'=>false , 'message'=>$validator->errors()], 400);
         }
@@ -36,7 +39,14 @@ class AuthController extends Controller
         $user = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
+            'current_plan'=>"free",
             'password'=>bcrypt($request->password)
+        ]);
+
+        $userPlan = UserPlan::create([
+            'user_id'=>$user->id,
+            'plan_id'=>1,
+            'is_active'=>true
         ]);
 
        $token = JWTAuth::fromUser($user);

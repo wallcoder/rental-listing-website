@@ -280,13 +280,16 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
             // if (!response.ok) {
             //     const errorData = await response.json()
             //     push.error(errorData.message || 'Failed to submit post.')
-            //     return
+        //     returnsele
             // }
             localStorage.setItem('message', response.data.message )
             router.push('/')
         } catch (error) {
-            console.error('Submission Error:', error.response.data.message)
-            push.error('Something went wrong while submitting.')
+            if(error.response.status === 403){
+                push.error(error.response.data?.message)
+            }
+            console.error('Submission Error:', error.response.data)
+            // push.error('Something went wrong while submitting.')
         }
     }
     

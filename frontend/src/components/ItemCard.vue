@@ -52,28 +52,38 @@ function timeAgo(timestamp) {
 
 </script>
 <template>
-    <RouterLink :to="`/rental-properties/${n.slug}`" 
+    <RouterLink :to="`/rental-properties/${n.slug}`"
         class="flex flex-col relative cursor-pointer   transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
         v-for="n in items" :key="n.id">
         <!-- IMAGE -->
-        
+
         <div class="relative ">
             <img :src="`${api}/${n.thumbnail}`" class="w-full  rounded-xl h-[250px] object-cover" :alt="n.id">
 
-            <div v-if="n?.category == 'house'"
-                class="bg-green-400 absolute rounded-full text-2xl -bottom-4 right-4 bx bx-home-alt-2 text-white p-2">
+            <div class="flex justify-between absolute -bottom-4 right-4 gap-2">
+                <div v-if="n?.category == 'house'"
+                    class="bg-green-400  rounded-full text-2xl -bottom-4 right-4 bx bx-home-alt-2 text-white p-2">
 
-            </div>
-            <div v-else class="bg-accent absolute rounded-full text-2xl -bottom-4 right-4 bx bx-store-alt text-white p-2">
+                </div>
+                <div v-else class="bg-accent  rounded-full text-2xl -bottom-4 right-4 bx bx-store-alt text-white p-2">
+
+                </div>
+                <div
+                    class="bg-green-500 rounded-full text-2xl   text-white  p-2 lamp-glow bx bx-rocket">
+                </div>
 
             </div>
         </div>
+
+
         <!-- ATTRIBUTES -->
-        <div v-if="n?.category == 'house'" class="py-2 flex flex-col">
-            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }},
-                 {{
-                    n.location.city }}</span>
+        <div v-if="n?.category == 'house'" class="py-2 flex flex-col p-2">
+            <h1 v-if="n?.location?.city || n?.location?.locality" class="text-sm text-gray-600"><span
+                    v-if="n.location?.locality">{{ n?.location?.locality }},</span> <span v-if="n.location?.city">{{
+                        n?.location?.city }}</span> </h1>
             <span class="text-sm text-gray-600" v-else>Location Unavilable</span>
+
+
 
             <div class="flex gap-2 items-center">
                 <div class="flex gap-1 text-sm items-center">
@@ -97,9 +107,10 @@ function timeAgo(timestamp) {
             <span class="text-xs text-gray-600 ">{{ timeAgo(n.created_at) }}</span>
 
         </div>
-        <div v-else class="py-2 flex flex-col ">
-            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality }},
-                 {{
+        <div v-else class="py-2 flex flex-col p-2">
+            <span class="text-sm text-gray-600" v-if="n?.location?.city || n?.location?.locality">{{ n.location?.locality
+            }},
+                {{
                     n.location.city }}</span>
             <span class="text-sm text-gray-600" v-else>Location Unavilable</span>
 
@@ -137,8 +148,24 @@ function timeAgo(timestamp) {
     display: none;
 }
 
+@keyframes lamp-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 1px 1px rgba(34, 197, 94, 0.6);
+        opacity: 1;
+    }
+
+    50% {
+        box-shadow: 0 0 1px 2px rgba(34, 197, 94, 0.9);
+        opacity: 0.9;
+    }
+}
+
+.lamp-glow {
+    animation: lamp-glow 2s ease-in-out infinite;
+}
 
 .swiper-pagination-bullet-active {
     background-color: #000 !important;
-}
-</style>
+}</style>

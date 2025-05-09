@@ -9,6 +9,7 @@ import ResetPassword from '../views/ResetPassword.vue'
 import ItemPage from '../views/ItemPage.vue'
 import CreatePost from '../views/CreatePost.vue'
 import UserPage from '@/views/UserPage.vue'
+import PostBoost from '@/views/PostBoost.vue'
 import Profile from '@/components/UserPage/Profile.vue'
 import Saved from '@/components/UserPage/Saved.vue'
 import Posts from '@/components/UserPage/Posts.vue'
@@ -20,7 +21,7 @@ import { storeToRefs } from 'pinia'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    
+
     {
       path: '/',
       name: 'main-layout',
@@ -34,7 +35,7 @@ const router = createRouter({
         {
           path: '/browse',
           name: 'browse',
-          props: (route)=> ({
+          props: (route) => ({
             street: route.query.street,
             locality: route.query.locality,
             city: route.query.city,
@@ -50,7 +51,14 @@ const router = createRouter({
           name: 'create-post',
           component: CreatePost,
           props: true,
-          meta: {requiresAuth: true}
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/boost',
+          name: 'boost',
+          component: PostBoost,
+          props: true,
+          meta: { requiresAuth: true }
         },
         {
           path: '/rental-properties/:slug',
@@ -62,34 +70,34 @@ const router = createRouter({
           path: '/user/login',
           name: 'user-login',
           component: UserLogin,
-          meta: {requiresLogout: true}
+          meta: { requiresLogout: true }
         },
         {
           path: '/user/signup',
           name: 'user-signup',
           component: UserSignup,
-          meta: {requiresLogout: true}
+          meta: { requiresLogout: true }
         },
         {
           path: '/user/request-password-reset',
           name: 'request-password-reset',
           component: RequestPasswordReset,
-          meta: {requiresLogout: true}
+          meta: { requiresLogout: true }
         },
         {
           path: '/user/reset-password/:token/:email',
           name: 'reset-password',
           component: ResetPassword,
           props: true,
-          meta: {requiresLogout: true}
+          meta: { requiresLogout: true }
         },
 
         {
           path: '/user',
           name: 'user-page',
           component: UserPage,
-          
-          meta: {requiresAuth: true},
+
+          meta: { requiresAuth: true },
           children: [
             {
               path: '',
@@ -106,13 +114,13 @@ const router = createRouter({
               name: 'user-saved',
               component: Saved
             },
-            
+
           ]
         },
-        
+
       ]
     },
-    
+
   ],
   scrollBehavior(to, from, savedPosition) {
     if (to.hash) {
@@ -125,32 +133,27 @@ const router = createRouter({
   },
 })
 
-router.beforeEach(async (to, from, next)=>{
-  const {checkToken} = useAuthStore();
+router.beforeEach(async (to, from) => {
+  const { checkToken } = useAuthStore();
 
-  if(to.meta.requiresAuth  ){
-
-    const check = await checkToken(true)
-    if(!check){
-      
-      return next('/user/login')
+  if (to.meta.requiresAuth) {
+    const check = await checkToken(true);
+    if (!check) {
+      return '/user/login'; // redirect
     }
-
-    next()
-   
+    return true; // allow
   }
 
-  if(to.meta.requiresLogout){
-    const check =await checkToken(true)
-    if(check){
-      return next('/')
+  if (to.meta.requiresLogout) {
+    const check = await checkToken(true);
+    if (check) {
+      return '/'; // redirect to home
     }
-
-    next()
+    return true; // allow
   }
 
-  next()
-  
-})
+  return true; // allow by default
+});
+
 
 export default router

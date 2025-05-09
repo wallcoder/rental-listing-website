@@ -35,5 +35,9 @@ class Post extends Model
         return $this->hasMany(Save::class);
     }
 
+    public function payment(): HasMany{
+        return $this->hasMany(Payment::class);
+    }
+
     
 }

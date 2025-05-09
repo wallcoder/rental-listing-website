@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->decimal('price', 10, 2);
             $table->decimal('area', 10, 2);
-            $table->string('description');
+            $table->text('description');
             $table->string('balcony');
             $table->string('parking');
             $table->string('furnished');

@@ -24,7 +24,7 @@ class PostController extends Controller
             $pag = $request->query('pag');
 
             if(!$loc){
-                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'created_at')->with(['location' => function($query){
+                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'created_at', 'is_boosted')->with(['location' => function($query){
                     $query->select('post_id','locality', 'city');
                 }, 'house:post_id,price,bedroom,bathroom', 'shop:post_id,price,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
 
@@ -231,6 +231,40 @@ class PostController extends Controller
         }
     }
 
+
+    public function getUserPosts(Request $request){
+        try{
+            $userId = $request->user()->id;
+
+            if(!$userId){
+                return response()->json(['success'=>false, 'message'=>"Unauthorized Access"], 401);
+            }
+
+            $posts = Post::where('user_id', $userId)
+            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'is_boosted', 'created_at')
+            ->with([
+                'location:post_id,locality,city',
+                'house:post_id,price,bedroom,bathroom,description',
+                'saves' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)->select('id', 'post_id'); // Include save ID
+                },
+                'shop:post_id,price,water_supply,electricity,description'
+            ])
+            ->orderBy('created_at', 'desc')->get();
+            
+            return response()->json(['success'=>true, 'message'=>'Posts Fetched', 'data'=>$posts], 200);
+        
+        
+        }catch(Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+
+        }
+    }
+
+
+    public function getTopLocations(){
+        
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -250,8 +284,24 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        try {
+            $userId = $request->user()->id;
+            if(!$userId){
+                return response()->json(['success'=>false, 'message'=>"Unauthorized Access"], 401);
+            }
+
+            Post::where('id', $id)->where('user_id', $userId)->delete();
+
+            return response()->json(['success' => true, 'message' => 'Post deleted'], 200);
+
+
+
+        } catch(Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+
+        }
+        
     }
 }

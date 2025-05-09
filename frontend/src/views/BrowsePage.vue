@@ -136,10 +136,10 @@ onUnmounted(() => {
 
          </div>
 
-         <div v-else class="flex flex-col gap-6 items-center justify-center py-10">
+         <div v-else class="flex flex-col gap-6 items-center justify-center py-10 h-[40vh]">
 
-            <img src="/bg_mt.png" class="w-60" alt="">
-            <h1 class="text-2xl  text-center text-gray-500">No Items Found!! Come back later</h1>
+            
+            <h1 class="text-xl  text-center text-gray-500">No listing found in this area</h1>
 
          </div>
       </div>
