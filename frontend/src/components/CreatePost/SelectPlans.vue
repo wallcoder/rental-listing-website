@@ -1,8 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { usePlanStore } from '@/stores/plan'
+import { usePayStore } from '@/stores/pay'
 import { storeToRefs } from 'pinia'
 import ButtonLink from '@/components/ButtonLink.vue'
+
+const { handlePayment } = usePayStore()
+const { isLoadingPay } = storeToRefs(usePayStore())
 const { plans, isLoadingPlans } = storeToRefs(usePlanStore())
 const { getPlans } = usePlanStore()
 const isOpenCheckout = ref(false)
@@ -122,9 +126,9 @@ onMounted(() => {
                     class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-4  max-h-screen overflow-y-auto">
                     <div class="flex flex-col md:flex-row gap-2 max-w-4xl mx-auto pointer-events-auto">
                         <!-- Boost Plan Card -->
-                        <div class="flex-1 min-w-[280px] bg-white p-6  rounded-2xl shadow-lg">
+                        <div class="flex-1 min-w-[280px] bg-white p-6  rounded-lg shadow-lg">
                             <div
-                                class="border-2 border-blue-500 rounded-2xl h-full p-4 bg-blue-50 shadow hover:shadow-xl transition-all">
+                                class="border-2 border-blue-500 rounded-lg h-full p-4 bg-blue-50 shadow hover:shadow-xl transition-all">
                                 <h2 class="text-xl font-semibold mb-2 text-blue-700">Boosted Listing</h2>
                                 <p class="text-blue-600 mb-4">Ideal for individuals with single listing.</p>
                                 <div class="text-3xl font-bold text-blue-800 mb-4">₹99</div>
@@ -134,12 +138,12 @@ onMounted(() => {
                                     <li>✅ Featured on Homepage</li>
                                     <li>✅ Boost lasts 7 days</li>
                                 </ul>
-                               
+
                             </div>
                         </div>
 
                         <!-- Order & Payment Section -->
-                        <div class="flex-1 min-w-[280px] bg-white p-8   rounded-2xl shadow-lg">
+                        <div class="flex-1 min-w-[280px] bg-white p-8   rounded-lg shadow-lg">
                             <div class="flex flex-col gap-2 border border-gray-200 rounded-lg p-6">
                                 <div class=" border-t ">
                                     <h3 class="text-lg font-semibold">Order Summary</h3>
@@ -156,12 +160,14 @@ onMounted(() => {
                                     complete the transaction securely.
                                 </p>
 
-                                <button id="razorpay-button"
+                                <button :disabled="isLoadingPay" id="razorpay-button" @click="handlePayment()" type="button"
                                     class="w-full bg-blue-600 rounded-3xl text-white py-2  font-semibold hover:bg-blue-700 transition">
-                                    Pay  with Razorpay
+                                    <span v-if="isLoadingPay">Loading..</span>
+                                    <span v-else>Pay with Razorpay</span>
                                 </button>
-                               
-                                <ButtonLink content="Cancel" type="button" :isLink="false" :fun="()=>{isOpenCheckout=false}"/>
+
+                                <ButtonLink content="Cancel" type="button" :isLink="false"
+                                    :fun="() => { isOpenCheckout = false }" />
                             </div>
                         </div>
                     </div>

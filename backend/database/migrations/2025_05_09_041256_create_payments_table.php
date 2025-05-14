@@ -19,10 +19,12 @@ return new class extends Migration
             $table->enum('purpose', ['subscription', 'listing_feature']);
             $table->foreignId('plan_id')->nullable()->constrained('plans')->onDelete('set null');
             $table->foreignId('post_id')->nullable()->constrained('posts')->onDelete('set null');
-            $table->string('payment_gateway', 50); 
+            $table->string('signature')->nullable();
             $table->string('ref_id'); 
+            $table->string('order_id');
+            $table->string('failure_reason')->nullable();
             $table->enum('status', ['success', 'failed', 'pending']);
-            $table->timestamp('paid_at')->nullable();
+          
             $table->timestamps();
         });
     }

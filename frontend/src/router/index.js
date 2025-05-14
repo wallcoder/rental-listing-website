@@ -30,11 +30,17 @@ const router = createRouter({
         {
           path: '',
           name: 'home',
+          meta: {
+            title: 'Home'
+          },
           component: HomePage
         },
         {
           path: '/browse',
           name: 'browse',
+          meta: {
+            title: 'Browse'
+          },
           props: (route) => ({
             street: route.query.street,
             locality: route.query.locality,
@@ -50,33 +56,41 @@ const router = createRouter({
           path: '/create-post',
           name: 'create-post',
           component: CreatePost,
+          
           props: true,
-          meta: { requiresAuth: true }
+          meta: { 
+            title: 'Create Post',
+            requiresAuth: true }
         },
         {
           path: '/boost',
           name: 'boost',
           component: PostBoost,
           props: true,
-          meta: { requiresAuth: true }
+          meta: { 
+            title: 'Boost',
+            requiresAuth: true }
         },
         {
           path: '/rental-properties/:slug',
           name: 'item-page',
           component: ItemPage,
-          props: true
+          props: true,
+          meta: {
+            title: 'Listing'
+          },
         },
         {
           path: '/user/login',
           name: 'user-login',
           component: UserLogin,
-          meta: { requiresLogout: true }
+          meta: {  title: 'Login', requiresLogout: true }
         },
         {
           path: '/user/signup',
           name: 'user-signup',
           component: UserSignup,
-          meta: { requiresLogout: true }
+          meta: {  title: 'Sign Up',requiresLogout: true }
         },
         {
           path: '/user/request-password-reset',
@@ -97,7 +111,7 @@ const router = createRouter({
           name: 'user-page',
           component: UserPage,
 
-          meta: { requiresAuth: true },
+          meta: {  title: 'User Page', requiresAuth: true },
           children: [
             {
               path: '',
@@ -153,6 +167,11 @@ router.beforeEach(async (to, from) => {
   }
 
   return true; // allow by default
+});
+
+router.afterEach((to) => {
+  const defaultTitle = 'inlist';
+  document.title = `inlist | ${to.meta.title}` || defaultTitle;
 });
 
 

@@ -7,6 +7,10 @@ import { useUtilStore } from '@/stores/util';
 import ButtonLink from '@/components/ButtonLink.vue'
 import axios from 'axios';
 import { push } from 'notivue'
+import {usePayStore} from '@/stores/pay'
+
+const {payBoost} = usePayStore()
+const {isLoadingPay} = storeToRefs(usePayStore())
 const { userPosts, isLoadingUserPosts } = storeToRefs(useUserStore())
 const { getUserPosts } = useUserStore()
 const { timeAgo } = useUtilStore()
@@ -16,7 +20,8 @@ const isOpenConfirmDelete = ref(false)
 onMounted(() => {
     getUserPosts()
 })
-
+const isOpenCheckout = ref(false)
+const postId = ref(null)
 const deletePost = async (id) => {
     try {
 
@@ -135,14 +140,14 @@ const deletePost = async (id) => {
                                     v-if="n.location?.city">{{ n?.location?.city }}</span> </h1>
                             <div class="flex gap-2 items-center">
 
-                                <span v-if="n.is_boosted" class="text-xs text-gray-600">Boost Expires in 2 days</span>
-                                <button v-if="!n.is_boosted"
+                                <!-- <span v-if="n.is_boosted" class="text-xs text-gray-600">Boost Expires in 2 days</span> -->
+                                <button v-if="!n.is_boosted" @click="()=>{isOpenCheckout = true; postId=n.id}"
                                     class="flex items-center py-1 px-2 rounded-xl bg-green-500 text-white hover:brightness-110 gap-2"><i
                                         class="bx bx-rocket"></i> Boost</button>
                                 <button v-else type="button"
                                     class="flex   items-center cursor-default  py-1 px-2 rounded-xl bg-green-500 text-white  gap-2"><i
                                         class="bx bx-rocket"></i> Boosted</button>
-                                
+
                                 <i class='bx bx-edit p-2 cursor-pointer rounded-full border hover:bg-gray-200 '></i>
                                 <i @click="() => { isOpenConfirmDelete = true; deleteId = n.id }"
                                     class='bx bx-x p-2 cursor-pointer rounded-full border hover:bg-gray-200 '></i>
@@ -170,7 +175,7 @@ const deletePost = async (id) => {
 
                             </div>
                             <div class="flex justify-between w-full">
-                                <span class="text-accent font-semibold"><span>₹{{ n?.shop?.price }}</span><span
+                                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span
                                         class="text-xs">/m</span></span>
 
 
@@ -194,7 +199,7 @@ const deletePost = async (id) => {
 
                             </div>
                             <div class="flex justify-between w-full">
-                                <span class="text-accent font-semibold"><span>₹{{ n?.house?.price }}</span><span
+                                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span
                                         class="text-xs">/m</span></span>
 
 
@@ -232,17 +237,80 @@ const deletePost = async (id) => {
                     class="absolute   top-1/2 p-8 left-1/2 rounded-lg -translate-x-1/2 -translate-y-1/2 bg-white   flex flex-col gap-2 pointer-events-auto transition-all duration-[0.5s] ease-out">
                     <h3 class="text-xl">Are you sure you want to delete this post?</h3>
                     <p class="text-sm">
-                        This action is permanent and cannot be undone. 
-                        
+                        This action is permanent and cannot be undone.
+
                     </p>
                     <p class="text-sm font-semibold">
-                        
+
                         Please note: Any amount paid for listing this post will not be refunded.
                     </p>
                     <div class="flex flex-col md:flex-row w-full  gap-2 ">
                         <ButtonLink :isLink="false" type="button" content="Proceed" :fun="() => { deletePost(deleteId) }" />
                         <ButtonLink :isLink="false" type="button" content="Cancel "
                             :fun="() => { isOpenConfirmDelete = false }" />
+                    </div>
+                </div>
+            </Transition>
+        </div>
+
+
+        <div class="fixed inset-0 z-30 pointer-events-none">
+            <!-- Overlay -->
+            <Transition>
+                <div v-if="isOpenCheckout" class="w-full h-full bg-black/60 backdrop-blur-sm pointer-events-auto"
+                    @click="isOpenCheckout = false"></div>
+            </Transition>
+
+            <!-- Modal -->
+            <Transition>
+                <div v-if="isOpenCheckout"
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-4  max-h-screen overflow-y-auto">
+                    <div class="flex flex-col md:flex-row gap-2 max-w-4xl mx-auto pointer-events-auto">
+                        <!-- Boost Plan Card -->
+                        <div class="flex-1 min-w-[280px] bg-white p-6  rounded-lg shadow-lg">
+                            <div
+                                class="border-2 border-blue-500 rounded-lg h-full p-4 bg-blue-50 shadow hover:shadow-xl transition-all">
+                                <h2 class="text-xl font-semibold mb-2 text-blue-700">Boosted Listing</h2>
+                                <p class="text-blue-600 mb-4">Ideal for individuals with single listing.</p>
+                                <div class="text-3xl font-bold text-blue-800 mb-4">₹99</div>
+                                <ul class="space-y-2 mb-6 text-sm text-blue-800">
+                                    <li>✅ 1 Listing Boost</li>
+                                    <li>✅ Appearing at the top of search results</li>
+                                    <li>✅ Featured on Homepage</li>
+                                    <li>✅ Boost lasts 7 days</li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                        <!-- Order & Payment Section -->
+                        <div class="flex-1 min-w-[280px] bg-white p-8   rounded-lg shadow-lg">
+                            <div class="flex flex-col gap-2 border border-gray-200 rounded-lg p-6">
+                                <!-- <div class=" border-t ">
+                                    <h3 class="text-lg font-semibold">Order Summary</h3>
+                                    <ul class="text-sm space-y-2 text-gray-700">
+                                        <li><strong>Item:</strong> Boost Listing</li>
+                                        <li><strong>Price:</strong> ₹99</li>
+                                        <li><strong>Total:</strong> ₹99</li>
+                                    </ul>
+                                </div> -->
+
+                                <h2 class="text-xl font-semibold ">Payment</h2>
+                                <p class="text-sm text-gray-600 ">
+                                    To proceed with the payment, click the button below. You'll be redirected to Razorpay to
+                                    complete the transaction securely.
+                                </p>
+
+                                <button :disabled="isLoadingPay" id="razorpay-button" @click="payBoost(99, postId)" type="button"
+                                    class="w-full bg-blue-600 rounded-3xl text-white py-2  font-semibold hover:bg-blue-700 transition">
+                                    <span v-if="isLoadingPay">Loading..</span>
+                                    <span v-else @click="isOpenCheckout=false">Pay with Razorpay</span>
+                                </button>
+
+                                <ButtonLink content="Cancel" type="button" :isLink="false"
+                                    :fun="() => { isOpenCheckout = false }" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </Transition>
@@ -266,4 +334,5 @@ const deletePost = async (id) => {
 
 .lamp-glow {
     animation: lamp-glow 2s ease-in-out infinite;
-}</style>
+}
+</style>

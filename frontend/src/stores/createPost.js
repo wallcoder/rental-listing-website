@@ -8,6 +8,8 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
     const router = useRouter();
     const category  = ref('house')
     const type = ref('concrete')
+    const area = ref(null)
+    const price = ref(null)
     const images = ref([])
     const thumbnail = ref(null)
     const thumbnailPreview = ref(null)
@@ -15,19 +17,19 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
     const MAX_FILE_SIZE_MB = 2
     const ALLOWED_TYPES = ['image/jpeg']
     const houseDetails = ref({
-        area: null,
+       
         bathroom: null,
         bedroom: null,
         balcony: 'no',
         parking: 'no',
         furnished: 'no',
-        price: null,
+       
         description: ''
     })
 
     const shopDetails = ref({
-        price: null,
-        area: null,
+      
+       
         floor: 'Ground Floor',
         electricity: 'no',
         water: 'no',
@@ -217,12 +219,15 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
         })
     }
 
-    const submit = async () => {
+    const submit = async (boost=false) => {
         try {
             const formData = new FormData()
     
             formData.append('category', category.value)
             formData.append('type', type.value)
+            formData.append('area', area.value)
+            formData.append('price', price.value)
+            formData.append('boost', boost)
     
             
             if (thumbnail.value) {
@@ -283,7 +288,7 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
         //     returnsele
             // }
             localStorage.setItem('message', response.data.message )
-            router.push('/')
+            router.push('/user/posts')
         } catch (error) {
             if(error.response.status === 403){
                 push.error(error.response.data?.message)
@@ -294,7 +299,7 @@ export const useCreatePostStore = defineStore('createPost', ()=>{
     }
     
     
-    return {category, type, images, previews, loader, autocompleteInput, autocompleteInstance, markers, location, houseDetails, contactDetails, 
+    return {category, type, images, previews, loader, autocompleteInput, autocompleteInstance, markers, location, houseDetails, contactDetails, area, price,
         shopDetails, address, thumbnail, thumbnailPreview,submit,
          removePreview, handleImageUpload, addMarker, removeMarker, extractAddress, removeThumbnailPreview, handleThumbnailUpload}
 })

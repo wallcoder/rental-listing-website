@@ -6,10 +6,15 @@ import TopLoader from '@/components/TopLoader.vue'
 </script>
 
 <template>
-  <section class="">
+  <section>
     <TopLoader />
     <MainNavbar />
-    <RouterView />
+
+   
+    <keep-alive include="browse">
+      <RouterView />
+    </keep-alive>
+
     <MainFooter />
   </section>
 </template>

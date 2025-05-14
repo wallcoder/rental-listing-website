@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\SaveController;
 use App\Http\Middleware\AuthPlan;
 use App\Http\Middleware\JwtAuthenticate;
@@ -26,15 +28,21 @@ Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::put('/user/edit-name', [AuthController::class, 'editName']);
     Route::delete('/user/delete-account', [AuthController::class, 'deleteAccount']);
     Route::delete('/post/delete/{id}', [PostController::class, 'destroy']);
+    Route::put('/post/boost/{id}', [PostController::class, 'setBoost']);
     Route::put('/user/change-password', [AuthController::class, 'changePassword']);
-    Route::middleware(AuthPlan::class)->post('/post/create', [PostController::class, 'store']);
+    Route::post('/post/create', [PostController::class, 'store']);
+    // Route::middleware(AuthPlan::class)->post('/post/create', [PostController::class, 'store']);
     Route::post('/save/create/{id}', [SaveController::class, 'store']);
     Route::get('/saves', [SaveController::class, 'index']);
     Route::get('/saves/listings', [SaveController::class, 'getSavedListings']);
     Route::get('/user/posts', [PostController::class, 'getUserPosts']);
-
+    Route::post('/create-order', [PaymentController::class, 'createOrder']);
+    Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
+    Route::post('/store-payment', [PaymentController::class, 'storePayment']);
+    Route::post('/store-failed-payment', [RazorpayController::class, 'storeFailed']);
 });
 Route::get('/posts', [PostController::class, "index"]);
+Route::get('/top-locations', [PostController::class, "getTopLocations"]);
 Route::get('/plans', [PlanController::class, "index"]);
 Route::get('/item/{slug}', [PostController::class, "show"]);
 Route::get('/browse', [PostController::class, "browse"]);

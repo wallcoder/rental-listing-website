@@ -12,6 +12,7 @@ use App\Models\Post;
 use App\Models\House;
 use Illuminate\Http\Client\ResponseSequence;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 class PostController extends Controller
 {
     /**
@@ -24,9 +25,9 @@ class PostController extends Controller
             $pag = $request->query('pag');
 
             if(!$loc){
-                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'created_at', 'is_boosted')->with(['location' => function($query){
+                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted')->with(['location' => function($query){
                     $query->select('post_id','locality', 'city');
-                }, 'house:post_id,price,bedroom,bathroom', 'shop:post_id,price,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
+                }, 'house:post_id,bedroom,bathroom', 'shop:post_id,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
 
                 return response()->json(['success'=>true, 'message'=> 'Posts fetched successfully', 'data'=> $post], 200);
             }
@@ -35,7 +36,7 @@ class PostController extends Controller
                 $query->where('city', $loc);
             })->with(['location' => function($query){
                 $query->select('post_id','locality', 'city');
-            }, 'house:post_id,price,bedroom,bathroom', 'shop:post_id,price,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
+            }, 'house:post_id,bedroom,bathroom', 'shop:post_id,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
 
             return response()->json(['success'=>true, 'message'=> 'Posts fetched successfully', 'data'=> $post], 200);
 
@@ -46,60 +47,133 @@ class PostController extends Controller
         }
     }
 
-    public function browse(Request $request){
-        try {
-            $street = $request->query('street');
-            $locality = $request->query('locality');
-            $city = $request->query('city');
-            $state = $request->query('state');
-            $pincode = $request->query('pincode');
-            $country = $request->query('country');
-            $pag = $request->query('limit', 14);
-    
-            $post = Post::select('id', 'user_id', 'category', 'thumbnail', 'status', 'slug', 'created_at')
-                ->whereHas('location', function($query) use ($street, $locality, $city, $state, $pincode, $country) {
-                    $query->when($street, function($q) use ($street) {
-                        $q->where('street', 'like', "%$street%");
-                    });
-                    $query->when($locality, function($q) use ($locality) {
-                        $q->where('locality', 'like', "%$locality%");
-                    });
-                    $query->when($city, function($q) use ($city) {
-                        $q->where('city', 'like', "%$city%");
-                    });
-                    $query->when($pincode, function($q) use ($pincode) {
-                        $q->where('pincode', 'like', "%$pincode%");
-                    });
-                    $query->when($state, function($q) use ($state) {
-                        $q->where('state', 'like', "%$state%");
-                    });
-                    $query->when($country, function($q) use ($country) {
-                        $q->where('country', 'like', "%$country%");
-                    });
-                })
-                ->with([
-                    'location:post_id,locality,city',
-                    'house:post_id,price,bedroom,bathroom',
-                    'shop:post_id,price,water_supply,electricity'
-                ])
-                ->orderBy('created_at', 'desc')
-                ->paginate($pag);
-    
-            return response()->json([
-                'success' => true,
-                'message' => 'Posts fetched successfully',
-                'data' => $post
-            ], 200);
-    
-        } catch(Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-    
+   public function browse(Request $request)
+{
+    try {
+        // Location filters
+        $street = $request->query('street');
+        $locality = $request->query('locality');
+        $city = $request->query('city');
+        $state = $request->query('state');
+        $pincode = $request->query('pincode');
+        $country = $request->query('country');
 
+
+        // Filters from frontend
+        $category = $request->query('category'); // 'house' or 'shop'
+        $type = $request->query('type'); // e.g. 'rent', 'sale'
+        $sort = $request->query('sort'); // e.g. 'price_asc', 'price_desc', 'latest'
+
+        $minPrice = $request->query('minPrice');
+        $maxPrice = $request->query('maxPrice');
+        $minArea = $request->query('minArea');
+        $maxArea = $request->query('maxArea');
+        // Additional filters
+    $minBed = $request->query('minBed');
+    $maxBed = $request->query('maxBed');
+    $minBath = $request->query('minBath');
+    $maxBath = $request->query('maxBath');
+
+
+        $pag = $request->query('limit', 20);
+
+        // Base query
+        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'slug', 'price', 'area', 'created_at')
+            ->where('status', 'active')
+            ->whereHas('location', function($q) use ($street, $locality, $city, $state, $pincode, $country) {
+                $q->when($street, fn($q) => $q->where('street', 'like', "%$street%"));
+                $q->when($locality, fn($q) => $q->where('locality', 'like', "%$locality%"));
+                $q->when($city, fn($q) => $q->where('city', 'like', "%$city%"));
+                $q->when($state, fn($q) => $q->where('state', 'like', "%$state%"));
+                $q->when($pincode, fn($q) => $q->where('pincode', 'like', "%$pincode%"));
+                $q->when($country, fn($q) => $q->where('country', 'like', "%$country%"));
+            })
+            ->when($category, fn($q) => $q->where('category', $category))
+            ->when($type, fn($q) => $q->where('type', $type))
+            ->when($minPrice, fn($q) => $q->where('price', '>=', $minPrice))
+            ->when($maxPrice, fn($q) => $q->where('price', '<=', $maxPrice))
+            ->when($minArea, fn($q) => $q->where('area', '>=', $minArea))
+            ->when($maxArea, fn($q) => $q->where('area', '<=', $maxArea))
+            ->with(['location:post_id,locality,city']);
+
+        // Apply house-specific filters
+if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
+    $query->whereHas('house', function($q) use ($minBed, $maxBed, $minBath, $maxBath) {
+        if ($minBed) {
+            $q->where('bedroom', '>=', $minBed);
+        }
+        if ($maxBed) {
+            $q->where('bedroom', '<=', $maxBed);
+        }
+        if ($minBath) {
+            $q->where('bathroom', '>=', $minBath);
+        }
+        if ($maxBath) {
+            $q->where('bathroom', '<=', $maxBath);
+        }
+    });
+}
+
+
+        // Sorting
+        switch ($sort) {
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'area_asc':
+                $query->orderBy('area', 'asc');
+                break;
+            case 'area_desc':
+                $query->orderBy('area', 'desc');
+                break;
+            case 'latest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $posts = $query->paginate($pag);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Posts fetched successfully',
+            'data' => $posts
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
+    
+    public function setBoost(Request $request, $id)
+{
+    try {
+        $post = Post::findOrFail($id);
+
+        $post->is_boosted = true;
+        $post->boosted_until = now()->addDays(7);
+        $post->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Post has been successfully boosted.',
+            'data' => $post
+        ]);
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -114,11 +188,19 @@ class PostController extends Controller
     public function store(Request $request)
     {
         try{
+
             $user  = $request->user()->id;
             $thumbnail =  $request->hasFile('thumbnail') ? $request->file('thumbnail')->store('uploads', 'public') : null; 
             $images = [];
             $slug = Str::random(10);
-            
+            $boostInput = $request->input('boost');
+            $boost = filter_var($boostInput, FILTER_VALIDATE_BOOLEAN);
+            $boostExpiresAt = null; // Initialize with null
+
+            if ($boost) {
+                 $boostExpiresAt = now()->addDays(7);
+                }
+
             
            if($request->hasFile('images')){
                 foreach($request->file('images') as $image){
@@ -134,6 +216,10 @@ class PostController extends Controller
                 'user_id'=>$user,
                 'category'=>$request->input('category'),
                 'type'=>$request->input('type'),
+                'area'=>$request->input('area'),
+                'price'=>$request->input('price'),
+                'is_boosted'=>$boost,
+                'boosted_until'=>$boostExpiresAt,
                 'thumbnail'=>$thumbnail,
                 'owner_name'=>$request->input('contactDetails.owner'),
                 'phone'=>$request->input('contactDetails.phone'),
@@ -148,8 +234,7 @@ class PostController extends Controller
            if($request->category == "house"){
             $house = House::create([
                 'post_id'=>$post->id,
-                'price'=>$request->input('houseDetails.price'),
-                'area'=>$request->input('houseDetails.area'),
+               
                 'description'=>$request->input('houseDetails.description'),
                 'balcony'=>$request->input('houseDetails.balcony'),
                 'parking'=>$request->input('houseDetails.parking'),
@@ -161,8 +246,7 @@ class PostController extends Controller
 
             $shop = Shop::create([
                 'post_id'=>$post->id,
-                'price'=>$request->input('shopDetails.price'),
-                'area'=>$request->input('shopDetails.area'),
+               
                 'description'=>$request->input('shopDetails.description'),
                 'electricity'=>$request->input('shopDetails.electricity'),
                 'water_supply'=>$request->input('shopDetails.water'),
@@ -241,14 +325,14 @@ class PostController extends Controller
             }
 
             $posts = Post::where('user_id', $userId)
-            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'is_boosted', 'created_at')
+            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'is_boosted', 'created_at')
             ->with([
                 'location:post_id,locality,city',
-                'house:post_id,price,bedroom,bathroom,description',
+                'house:post_id,bedroom,bathroom,description',
                 'saves' => function ($q) use ($userId) {
                     $q->where('user_id', $userId)->select('id', 'post_id'); // Include save ID
                 },
-                'shop:post_id,price,water_supply,electricity,description'
+                'shop:post_id,water_supply,electricity,description'
             ])
             ->orderBy('created_at', 'desc')->get();
             
@@ -262,9 +346,27 @@ class PostController extends Controller
     }
 
 
-    public function getTopLocations(){
-        
+    public function getTopLocations()
+{
+    try{
+
+    
+    $topLocations = Location::with('post')
+        ->whereHas('post', function ($query) {
+            $query->where('status', 'active'); // filter active posts
+        })
+        ->select('city', DB::raw('COUNT(*) as post_count'))
+        ->groupBy('city')
+        ->orderByDesc('post_count')
+        ->limit(3)
+        ->get();
+
+    return response()->json(['success'=>true, 'message'=>'Top Location Fetched', 'data'=>$topLocations], 200);
+    }catch(Exception $e){
+         return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+
     }
+}
     /**
      * Show the form for editing the specified resource.
      */

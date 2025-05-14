@@ -10,17 +10,27 @@ import MapView from '@/components/MapView.vue';
 import { useMapStore } from '@/stores/map'
 import { useUtilStore } from '@/stores/util';
 import { usePostStore } from '@/stores/post'
-
+import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
+const route = useRoute()
+const router = useRouter()
 const mapStore = useMapStore()
-const { rentals, isLoadingBrowse } = storeToRefs(usePostStore());
-const { getRentals } = usePostStore();
+const { rentals, isLoadingBrowse, filter } = storeToRefs(usePostStore());
+const { getRentals, resetFilter } = usePostStore();
 const { isBrowsePage } = storeToRefs(useUtilStore())
-const { autocompleteInput, searchLoc, autocompleteInstance, markers, location } = storeToRefs(mapStore)
-const { loader } = mapStore;
+const { autocompleteInput, searchLoc, autocompleteInstance, autocompleteService, mizoramBounds, markers, location, predictions, placesService, searchAddress } = storeToRefs(mapStore)
+const { loader, extractSearchAddress, onEnterSearch } = mapStore;
 const suggestions = ref([]);
 const showSuggestions = ref(false);
 const isOpenFilter = ref(false);
+
+const applyFilter = () => {
+   getRentals(props.street, props.locality, props.city, props.state, props.pincode, props.country)
+}
+
+
 const props = defineProps({
+   name: 'browse',
    street: { type: String },
    locality: { type: String },
    city: { type: String },
@@ -34,38 +44,79 @@ const props = defineProps({
 
 onMounted(async () => {
 
+  
    getRentals(props.street, props.locality, props.city, props.state, props.pincode, props.country)
    const placesLib = await loader.importLibrary('places')
-   // isBrowsePage.value = true;
-   const { Autocomplete } = placesLib
+   const { AutocompleteService, PlacesService } = placesLib
+
+   autocompleteService.value = new AutocompleteService()
 
    if (autocompleteInput.value) {
-      autocompleteInstance.value = new Autocomplete(autocompleteInput.value, {
+      autocompleteInstance.value = new window.google.maps.places.Autocomplete(autocompleteInput.value, {
          types: ['geocode'],
-         // componentRestrictions: { country: 'in' },
+         componentRestrictions: { country: 'IN' },
+         bounds: mizoramBounds.value,
+         strictBounds: true
       })
+
+      const mapDiv = document.createElement('div') // dummy div for PlacesService
+      placesService.value = new PlacesService(mapDiv)
 
       autocompleteInstance.value.addListener('place_changed', () => {
          const place = autocompleteInstance.value.getPlace()
-         searchLoc.value = place.formatted_address
          if (place.geometry && place.geometry.location) {
             const lat = place.geometry.location.lat()
             const lng = place.geometry.location.lng()
-
             location.value = { lat, lng }
-            console.log("LOCATION: ", location.value)
-            // markers.value = [{
-            //    position: { lat, lng },
-            //    title: place.formatted_address || `Marker at ${lat}, ${lng}`
-            // }]
+            searchLoc.value = place.formatted_address
+            extractSearchAddress(place)
+            console.log(searchAddress.value)
+            router.push(`/browse?street=${searchAddress.value.street}&locality=${searchAddress.value.locality}&city=${searchAddress.value.city}&state=${searchAddress.value.state}&pincode=${searchAddress.value.pincode}&country=${searchAddress.value.country}`)
          }
       })
    }
 })
 
 onUnmounted(() => {
-   // isBrowsePage.value = false
+
 })
+
+
+watch(searchLoc, async (val) => {
+   if (val && autocompleteService) {
+      autocompleteService.value.getPlacePredictions({
+         input: val,
+         componentRestrictions: { country: 'IN' },
+         bounds: mizoramBounds.value,
+         strictBounds: true,
+      }, (preds, status) => {
+         if (status === 'OK' && preds?.length) {
+            predictions.value = preds
+         }
+      })
+   }
+})
+
+
+watch(
+   () => route.query,
+   () => {
+      resetFilter()
+      getRentals(props.street, props.locality, props.city, props.state, props.pincode, props.country)
+   }
+)
+
+
+const goToPage = (url) => {
+   if (!url) return;
+   const urlObj = new URL(url);
+   const page = urlObj.searchParams.get("page");
+
+   if (page) {
+      getRentals(props.street, props.locality, props.city, props.state, props.pincode, props.country, page);
+   }
+};
+
 </script>
 
 <template>
@@ -79,17 +130,17 @@ onUnmounted(() => {
 
          <div class="relative flex items-center bg-white rounded-3xl border w-[350px]">
             <i class="bx bxs-map text-accent text-2xl px-2"></i>
-            <input v-model="searchLoc" type="search" id="autocomplete" ref="autocompleteInput"
+            <input @keyup.enter="onEnterSearch" v-model="searchLoc" type="search" id="autocomplete" ref="autocompleteInput"
                placeholder="Location in Mizoram" class="w-36 py-1 px-2 flex-1 outline-none" />
             <button class="flex items-center justify-center">
-               <i class="bx bx-search px-4 text-xl"></i>
+               <i class="bx bx-search px-4 text-xl" @click="onEnterSearch()"></i>
             </button>
 
 
          </div>
 
          <!-- Sort Filter -->
-         <div class=" items-center gap-2 bg-white py-1  rounded-3xl hidden md:flex">
+         <!-- <div class=" items-center gap-2 bg-white py-1  rounded-3xl hidden md:flex">
             <label for="sort">Sort by</label>
             <select name="sort" id="sort" class="outline-none   rounded-lg cursor-pointer">
                <option value="0">Recommended</option>
@@ -97,10 +148,10 @@ onUnmounted(() => {
                <option value="0">Price High to Low</option>
                <option value="0">Price Low to High</option>
             </select>
-         </div>
+         </div> -->
 
          <!-- Filters button -->
-         <div class="flex items-center gap-2 bg-white py-1  rounded-3xl  cursor-pointer hover:bg-gray-100"
+         <div class="flex items-center gap-2 bg-white py-1  p-3 rounded-3xl  cursor-pointer hover:bg-gray-100"
             @click="isOpenFilter = true">
             <span>Filters</span>
             <i class="bx bx-filter text-xl "></i>
@@ -113,7 +164,7 @@ onUnmounted(() => {
       <section v-if="isLoadingBrowse" class="flex flex-col bg-white">
          <div
             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 py-6 px-[4%] lg:px-[8%]">
-            <div v-for="n in 8" :key="n" class="h-64 bg-gray-100 rounded-lg relative overflow-hidden">
+            <div v-for="n in 8" :key="n" class="h-[300px] bg-gray-100 rounded-lg relative overflow-hidden">
                <div
                   class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent">
                </div>
@@ -121,9 +172,12 @@ onUnmounted(() => {
          </div>
       </section>
       <div v-else>
-         <div v-if="rentals?.data.length > 0">
+         <div v-if="rentals?.data.length > 0" class="py-2 flex flex-col gap-2">
+            <p class="px-[4%] lg:px-[8%] text- text-gray-500">
+               Showing {{ rentals.data.length }} out of {{ rentals.total }} results
+            </p>
             <div
-               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4  py-6 px-[4%]  lg:px-[8%]">
+               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4   px-[4%]  lg:px-[8%]">
 
                <ItemCard :items="rentals?.data" />
 
@@ -131,18 +185,29 @@ onUnmounted(() => {
             </div>
             <!-- Pagination -->
             <div class="flex items-center justify-center py-8">
+               <div class="flex space-x-1">
+                  <button v-for="(link, index) in rentals.links" :key="index" :disabled="!link.url"
+                     @click="goToPage(link.url)" v-html="link.label" class="px-3 py-1 rounded-lg border " :class="{
 
+                        'bg-accent text-white': link.active,
+                        'bg-gray-200 hover:bg-gray-300': !link.active,
+                        'opacity-50 ': !link.url
+                     }"></button>
+               </div>
             </div>
 
          </div>
 
          <div v-else class="flex flex-col gap-6 items-center justify-center py-10 h-[40vh]">
 
-            
+
             <h1 class="text-xl  text-center text-gray-500">No listing found in this area</h1>
 
          </div>
       </div>
+
+
+
 
 
       <!-- SEARCH FILTER -->
@@ -164,40 +229,46 @@ onUnmounted(() => {
                   <i class="bx bx-x text-2xl cursor-pointer" @click="isOpenFilter = false"></i>
                </div>
 
+
                <!-- Filters Container -->
                <div class="flex flex-col gap-4">
 
                   <div class="flex flex-col sm:flex-row gap-4">
                      <div class="flex flex-col flex-1">
                         <label for="category">Sort by</label>
-                        <select id="category" class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
-                           <option value="0">Newest</option>
-                           <option value="1">Price Low to High</option>
-                           <option value="3">Price High to Low</option>
-                           
+                        <select v-model="filter.sort" id="category"
+                           class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
+                           <option value="latest">Latest</option>
+                           <option value="price_asc">Price Low to High</option>
+                           <option value="price_desc">Price High to Low</option>
+                           <option value="area_asc">Area Low to High</option>
+                           <option value="area_desc">Area High to Low</option>
+
                         </select>
                      </div>
 
-                     
+
                   </div>
 
                   <!-- Category & Type -->
                   <div class="flex flex-col sm:flex-row gap-4">
                      <div class="flex flex-col flex-1">
                         <label for="category">Category</label>
-                        <select id="category" class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
-                           <option value="0">All</option>
-                           <option value="1">House</option>
-                           <option value="2">Shop</option>
+                        <select v-model="filter.category" id="category"
+                           class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
+                           <option value="">All</option>
+                           <option value="house">House</option>
+                           <option value="shop">Shop</option>
                         </select>
                      </div>
 
                      <div class="flex flex-col flex-1">
                         <label for="type">Type</label>
-                        <select id="type" class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
-                           <option value="0">All</option>
-                           <option value="1">Concrete</option>
-                           <option value="2">Assam-Type</option>
+                        <select v-model="filter.type" id="type"
+                           class="outline-none bg-gray-100 p-2 rounded-lg cursor-pointer">
+                           <option value="">All</option>
+                           <option value="concrete">Concrete</option>
+                           <option value="assam-type">Assam-Type</option>
                         </select>
                      </div>
                   </div>
@@ -205,78 +276,174 @@ onUnmounted(() => {
                   <!-- Price & Area -->
                   <div class="flex flex-col sm:flex-row gap-4">
                      <div class="flex flex-col flex-1">
-                        <label>Price(₹)</label>
+                        <label>Price (₹)</label>
                         <div class="flex gap-2">
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>0</option>
-                              <option>500</option>
+                           <!-- Min Price -->
+                           <select v-model="filter.minPrice"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="0">0</option>
+                              <option value="2500">2,500</option>
+                              <option value="5000">5,000</option>
+                              <option value="7500">7,500</option>
+                              <option value="10000">10,000</option>
+                              <option value="15000">15,000</option>
+                              <option value="20000">20,000</option>
+                              <option value="25000">25,000</option>
+                              <option value="30000">30,000</option>
+                              <option value="35000">35,000</option>
+                              <option value="40000">40,000</option>
+                              <option value="45000">45,000</option>
+                              <option value="50000">50,000</option>
+                              <option value="60000">60,000</option>
+                              <option value="70000">70,000</option>
+                              <option value="80000">80,000</option>
+                              <option value="90000">90,000</option>
+                              <option value="100000">1,00,000</option>
                            </select>
+
                            <span class="self-center">to</span>
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>1000</option>
-                              <option>500</option>
+
+                           <!-- Max Price -->
+                           <select v-model="filter.maxPrice"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="2500">2,500</option>
+                              <option value="5000">5,000</option>
+                              <option value="7500">7,500</option>
+                              <option value="10000">10,000</option>
+                              <option value="15000">15,000</option>
+                              <option value="20000">20,000</option>
+                              <option value="25000">25,000</option>
+                              <option value="30000">30,000</option>
+                              <option value="35000">35,000</option>
+                              <option value="40000">40,000</option>
+                              <option value="45000">45,000</option>
+                              <option value="50000">50,000</option>
+                              <option value="60000">60,000</option>
+                              <option value="70000">70,000</option>
+                              <option value="80000">80,000</option>
+                              <option value="90000">90,000</option>
+                              <option value="100000">1,00,000</option>
                            </select>
                         </div>
                      </div>
+
 
                      <div class="flex flex-col flex-1">
-                        <label>Area(sq.m)</label>
+                        <label>Area (sq.m)</label>
                         <div class="flex gap-2">
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>0</option>
-                              <option>500</option>
+                           <!-- Min Area -->
+                           <select v-model="filter.minArea"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="0">0</option>
+                              <option value="500">500</option>
+                              <option value="1000">1000</option>
+                              <option value="1500">1500</option>
+                              <option value="2000">2000</option>
+                              <option value="2500">2500</option>
+                              <option value="3000">3000</option>
+                              <option value="3500">3500</option>
+                              <option value="4000">4000</option>
+                              <option value="4500">4500</option>
+                              <option value="5000">5000</option>
+                              <option value="7500">7500</option>
+                              <option value="10000">10000</option>
+
                            </select>
+
                            <span class="self-center">to</span>
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>1000</option>
-                              <option>500</option>
+
+                           <!-- Max Area -->
+                           <select v-model="filter.maxArea"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="500">500</option>
+                              <option value="1000">1000</option>
+                              <option value="1500">1500</option>
+                              <option value="2000">2000</option>
+                              <option value="2500">2500</option>
+                              <option value="3000">3000</option>
+                              <option value="3500">3500</option>
+                              <option value="4000">4000</option>
+                              <option value="4500">4500</option>
+                              <option value="5000">5000</option>
+                              <option value="7500">7500</option>
+                              <option value="10000">10000</option>
+
                            </select>
                         </div>
                      </div>
+
                   </div>
 
-                  <!-- Bedrooms & Bathrooms -->
-                  <div class="flex flex-col sm:flex-row gap-4">
+                  <div v-if="filter.category == 'house'" class="flex flex-col sm:flex-row gap-4">
+                     <!-- Bedrooms -->
                      <div class="flex flex-col flex-1">
                         <label>Bedrooms</label>
                         <div class="flex gap-2">
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>0</option>
-                              <option>2</option>
+                           <select v-model="filter.minBed"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="0">0</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6+</option>
                            </select>
                            <span class="self-center">to</span>
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>3</option>
-                              <option>5</option>
+                           <select v-model="filter.maxBed"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6+</option>
                            </select>
                         </div>
                      </div>
 
+                     <!-- Bathrooms -->
                      <div class="flex flex-col flex-1">
                         <label>Bathrooms</label>
                         <div class="flex gap-2">
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>0</option>
-                              <option>1</option>
+                           <select v-model="filter.minBath"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="0">0</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6+</option>
                            </select>
                            <span class="self-center">to</span>
-                           <select class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
-                              <option>2</option>
-                              <option>4</option>
+                           <select v-model="filter.maxBath"
+                              class="w-1/2 min-w-[80px] bg-gray-100 p-2 rounded-lg outline-none cursor-pointer">
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6+</option>
                            </select>
                         </div>
                      </div>
                   </div>
 
+
                   <!-- Apply Button -->
-                  <div class="mt-2 flex justify-end">
-                     <ButtonLink content="Apply" />
+                  <div class="mt-2 flex justify-end gap-2">
+
+                     <ButtonLink content="Reset" :isLink="false" :fun="() => { resetFilter(); }" />
+                     <ButtonLink content="Apply" :isLink="false" :fun="() => { applyFilter(); isOpenFilter = false }" />
                   </div>
+
                </div>
             </div>
 
          </Transition>
       </div>
+
 
 
 

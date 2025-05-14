@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import {ref} from 'vue'
 const floors =ref(['Ground Floor', 'First Floor', 'Second Floor', 'Third Floor', 'Forth Floor', 'Fifth Floor', 'Sixth Floor', 'Seventh Floor', 'Eighth Floor', 'Ninth Floor'])
 const createPost = useCreatePostStore()
-const { category, shopDetails } = storeToRefs(createPost)
+const { category, shopDetails, area, price } = storeToRefs(createPost)
 
 </script>
 <template>
@@ -29,7 +29,7 @@ const { category, shopDetails } = storeToRefs(createPost)
                     <label for="price ">Price(per month)</label>
                     <div class="flex items-center gap-2">
                         <span>₹</span>
-                        <input type="number" name="price" id="price" v-model="shopDetails.price"
+                        <input type="number" name="price" id="price" v-model="price"
                             class="border p-2 rounded-lg w-full outline-none" min="0" required>
                     </div>
 
@@ -41,7 +41,7 @@ const { category, shopDetails } = storeToRefs(createPost)
             <div class="flex gap-7  items-center">
                 <div class="flex flex-col w-[60px]">
                     <label for="bathroom">Area(sq.m)</label>
-                    <input v-model="shopDetails.area" type="number" name="Area" id="Area" class="border p-2 rounded-lg w-full outline-none" min="0"
+                    <input v-model="area" type="number" name="Area" id="Area" class="border p-2 rounded-lg w-full outline-none" min="0"
                         required>
 
                 </div>

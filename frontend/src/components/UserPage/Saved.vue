@@ -130,7 +130,7 @@ onMounted(() => {
 
                             </div>
                             <div class="flex justify-between w-full">
-                                <span class="text-accent font-semibold"><span>₹{{ n?.shop?.price }}</span><span
+                                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span
                                         class="text-xs">/m</span></span>
 
 
@@ -154,7 +154,7 @@ onMounted(() => {
 
                             </div>
                             <div class="flex justify-between w-full">
-                                <span class="text-accent font-semibold"><span>₹{{ n?.house?.price }}</span><span
+                                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span
                                         class="text-xs">/m</span></span>
 
 

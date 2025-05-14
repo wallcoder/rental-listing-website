@@ -27,15 +27,15 @@ class DatabaseSeeder extends Seeder
            
         ]);
 
-        Plan::create([
-            'name' => 'boosted',
-            'price' => 99,
+        // Plan::create([
+        //     'name' => 'boosted',
+        //     'price' => 99,
             
-        ]);
+        // ]);
 
         Plan::create([
             'name' => 'agent',
-            'price' => 999,
+            'price' => 499,
             
          
         ]);

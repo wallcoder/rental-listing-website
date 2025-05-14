@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
-            $table->decimal('price', 10, 2);
-            $table->decimal('area', 10, 2);
+         
             $table->text('description');
             $table->string('electricity');
             $table->string('water_supply');

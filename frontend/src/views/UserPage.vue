@@ -27,10 +27,12 @@
             </h2>
             <h2 class="text-gray-600" v-if="user?.email">{{ user?.email }}</h2>
 
-            <div class="py-6 flex  gap-4">
+            <div class="py-6 flex  gap-4 flex-wrap">
                 <RouterLink to="/user" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Profile</RouterLink>
                 <RouterLink to="/user/saved" class="text-lg font-semibold hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Saved</RouterLink>
                 <RouterLink to="/user/posts" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Posts</RouterLink>
+                <RouterLink to="/user/posts" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Transactions</RouterLink>
+                <RouterLink to="/user/posts" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Subscription</RouterLink>
                 <span class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg cursor-pointer" @click="logout()">Logout</span>
 
 

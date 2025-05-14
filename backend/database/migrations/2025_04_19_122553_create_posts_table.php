@@ -21,11 +21,13 @@ return new class extends Migration
             $table->string('phone');
             $table->string('email');
             $table->string('slug');
+            $table->decimal('price', 10, 2);
+            $table->decimal('area', 10, 2);
             $table->boolean('is_boosted')->default(false);
             $table->dateTime('boosted_until')->nullable();
             $table->integer('clicks')->default(0);
-            
-            $table->enum('status', ['active', 'expired', 'deleted', 'inactive'])->default('active');
+            $table->boolean('is_rented')->default(false);
+            $table->enum('status', ['active', 'expired', 'deleted', 'inactive',])->default('active');
             $table->date('expiry_date')->nullable();
             $table->timestamps();
         });
