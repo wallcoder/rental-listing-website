@@ -3,7 +3,7 @@ import { useCreatePostStore } from '@/stores/createPost'
 import { storeToRefs } from 'pinia'
 
 const createPost = useCreatePostStore()
-const { category, houseDetails } = storeToRefs(createPost)
+const { category, houseDetails, area, price } = storeToRefs(createPost)
 </script>
 <template>
     <div class="rounded-xl bg-white p-4 flex flex-col gap-2 border border-gray-300" v-if="category == 'house'">
@@ -24,7 +24,7 @@ const { category, houseDetails } = storeToRefs(createPost)
                     <label for="price ">Price(per month) <span class="text-accent">*</span></label>
                     <div class="flex items-center gap-2">
                         <span class="">₹</span>
-                        <input type="number" name="price" id="price" v-model="houseDetails.price"
+                        <input type="number" name="price" id="price" v-model="price"
                             class="border p-2 rounded-lg w-full outline-none" min="0" required>
                     </div>
 
@@ -36,7 +36,7 @@ const { category, houseDetails } = storeToRefs(createPost)
             <div class="flex gap-10 ">
                 <div class="flex flex-col w-[60px]">
                     <label for="bathroom">Area(sq.m)<span class="text-accent">*</span></label>
-                    <input type="number" name="Area" id="Area" v-model="houseDetails.area"
+                    <input type="number" name="Area" id="Area" v-model="area"
                         class="border p-2 rounded-lg w-full outline-none" min="0" required>
 
                 </div>

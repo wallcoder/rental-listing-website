@@ -14,6 +14,7 @@ import ContactDetails from '@/components/CreatePost/ContactDetails.vue'
 import LocationDetails from '@/components/CreatePost/LocationDetails.vue'
 import PlanDetails from '@/components/CreatePost/PlanDetails.vue'
 import Thumbnail from '@/components/CreatePost/Thumbnail.vue'
+import SelectPlans from '@/components/CreatePost/SelectPlans.vue'
 import { useCreatePostStore } from '@/stores/createPost'
 const createPost = useCreatePostStore()
 const { submit } = createPost
@@ -34,8 +35,10 @@ const { submit } = createPost
             <ShopDetails />
             <ContactDetails />
             <LocationDetails />
-            <ButtonLink content="Submit" :isLink="false" type="submit" />
-            <PlanDetails />
+            <div>
+                <ButtonLink type="submit" content="Post this Property" :isLink="false" />
+            </div>
+            <!-- <SelectPlans /> -->
 
 
 

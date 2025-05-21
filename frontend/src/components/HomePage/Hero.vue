@@ -86,8 +86,8 @@ onMounted(async () => {
                 <input v-model="searchLoc" type="search" id="autocomplete" ref="autocompleteInput"
                     placeholder="Search Location" class="w-36 py-3 px-2 flex-1 outline-none bg-gray-100 rounded-lg"
                     @keyup.enter="onEnterSearch" />
-                <button class="flex items-center">
-                    <i class="bx bx-search p-3 text-xl" @click="onEnterSearch()"></i>
+                <button class="flex items-center rounded-full p-2 ">
+                    <i class="bx bx-search text-xl hover:text-accent" @click="onEnterSearch()"></i>
 
                 </button>
             </div>

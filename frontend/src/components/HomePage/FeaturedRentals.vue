@@ -51,7 +51,7 @@ onMounted(() => {
 
         <div  v-else class="flex flex-col gap-4 v-else py-10 border-b-2 border-gray-200">
             
-            <h1 class="text-3xl font-semibold text-center">Recent <span class="text-accent">Posts</span></h1>
+            <h1 class="text-3xl font-semibold text-center">Featured <span class="text-accent">Listings</span></h1>
             <div v-if="featuredRentals.length > 0">
                
                 <div
@@ -66,10 +66,10 @@ onMounted(() => {
                 </div>
 
             </div>
-            <div v-else class="flex flex-col gap-6 items-center justify-center py-10">
+            <div v-else class="flex flex-col gap-6 items-center justify-center py-6">
 
-                <img src="/bg_mt.png" class="w-60" alt="">
-                <h1 class="text-2xl  text-center text-gray-500">No Items Found!! Come back later</h1>
+               
+                <h1 class="text-lg  text-center text-gray-500">No Listing is available yet. Come back later.</h1>
 
             </div>
 

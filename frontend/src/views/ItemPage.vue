@@ -109,6 +109,7 @@ const filteredImages = computed(() => {
 </script>
 <template>
     <div>
+       
 
         <!-- {{ item.location }} -->
         <div v-if="isLoadingItem">
@@ -194,6 +195,7 @@ const filteredImages = computed(() => {
         <section class="px-[4%]  lg:px-[8%] " v-else>
             <section>
                 <!-- {{item}} -->
+               
 
                 <div class="w-full hidden gap-1 lg:flex h-[450px]" v-if="item?.image">
                     <div class="w-[50%] cursor-pointer overflow-hidden h-[450px]"  @click="isOpenSlideshow = true">
@@ -247,24 +249,21 @@ const filteredImages = computed(() => {
                 <div class="flex flex-col md:flex-row gap-2 ">
                     <div class="flex-1 flex flex-col gap-2">
                         <div class="flex flex-col ">
-                            <span class="text-gray-500">{{ timeAgo(item.created_at) }}</span>
-                            <span class="text-gray-500 text-xs">Posted {{ formatDate(item.created_at) }}</span>
+                            <span class="text-gray-500">{{ timeAgo(item?.created_at) }}</span>
+                            <span class="text-gray-500 text-xs">Posted {{ formatDate(item?.created_at) }}</span>
                         </div>
-                        <p class="text-gray-700 " v-if="item.category == 'house'"> {{ item.house?.description }}
-                        </p>
-                        <p class="text-gray-700 " v-else> {{ item.shop?.description }}
-                        </p>
+                        
                         <div v-if="item.category == 'house'"
                             class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-2 text-xl  py-4   rounded-lg ">
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Monthly Rent</h3>
-                                <span>₹{{ item.house?.price }}</span>
+                                <span>₹{{ item?.price }}</span>
                             </div>
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Area</h3>
-                                <span>{{ item.house?.area }} sq.m</span>
+                                <span>{{ item?.area }} sq.m</span>
                             </div>
-                            <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
+                        <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Bedrooms</h3>
                                 <span class="capitalize">{{ item.house?.bedroom }}</span>
                             </div>
@@ -301,11 +300,11 @@ const filteredImages = computed(() => {
 
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Monthly Rent</h3>
-                                <span>₹{{ item.shop?.price }}</span>
+                                <span>₹{{ item?.price }}</span>
                             </div>
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Area</h3>
-                                <span>{{ item.shop?.area }} sq.m</span>
+                                <span>{{ item?.area }} sq.m</span>
                             </div>
                             <div class="flex flex-col items-center px-6 bg-gray-100 py-2 rounded-lg">
                                 <h3 class="text-gray-500 text-center">Electricity</h3>
@@ -335,6 +334,10 @@ const filteredImages = computed(() => {
                             </div>
 
                         </div>
+                        <p class="text-gray-700 " v-if="item.category == 'house'"> {{ item.house?.description }}
+                        </p>
+                        <p class="text-gray-700 " v-else> {{ item.shop?.description }}
+                        </p>
                         <div class="flex flex-col gap-2 py-4">
                             <div class=" top-3 right-16 flex gap-2">
                                 <button @click="recenterMap()"
@@ -375,8 +378,9 @@ const filteredImages = computed(() => {
                             <div class="flex flex-col gap-2">
                                 <a :href="`mailto:${item.email}`" class="flex items-center border-2  border-gray-400 hover:border-transparent hover:text-white justify-center gap-2 cursor-pointer p-[8px] px-5 text-center rounded-3xl hover:bg-accent">
                                     <i class='bx bx-envelope'></i><span>Send Email</span></a>
-                                <ButtonLink content="Send Message" icon="bx bx-message-dots" />
+                                <!-- <ButtonLink content="Send Message" icon="bx bx-message-dots" /> -->
                             </div>
+                            <button class="hover:underline">Report this listing</button>
                         </div>
                     </div>
                 </div>

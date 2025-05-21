@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserPlan;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
@@ -29,6 +30,8 @@ class AuthController extends Controller
             'confirm_password' => 'required|same:password'
         ]);
 
+
+
         if($validator->fails()){
             return response()->json(['success'=>false , 'message'=>$validator->errors()], 400);
         }
@@ -36,7 +39,14 @@ class AuthController extends Controller
         $user = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
+            'current_plan'=>"free",
             'password'=>bcrypt($request->password)
+        ]);
+
+        $userPlan = UserPlan::create([
+            'user_id'=>$user->id,
+            'plan_id'=>1,
+            'is_active'=>true
         ]);
 
        $token = JWTAuth::fromUser($user);
@@ -44,9 +54,9 @@ class AuthController extends Controller
             'name'=>$user->name,
             'email'=>$user->email
         ];
-      
+        $ttl = config('jwt.ttl');
 
-        return response()->json(['success'=>true, 'message'=>'User Created Successfully', 'data'=>$result])->cookie('token', $token, 15, '/', null, false,true, false, 'Lax' );
+        return response()->json(['success'=>true, 'message'=>'User Created Successfully', 'data'=>$result])->cookie('token', $token, $ttl, '/', null, false,true, false, 'Lax' );
 
     }catch(Exception $e ){
         return response()->json(['success'=>false, 'message'=>$e->getMessage()]);
@@ -67,6 +77,81 @@ class AuthController extends Controller
             return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
         }
 
+    }
+
+    public function editName(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                
+                'name'=>'required'
+            ]);
+
+            if($validator->fails()){
+                return response()->json(['success'=>false , 'message'=>$validator->errors()], 400);
+            }
+
+            $user = User::where('id', $request->user()->id)->update([
+                'name' => $request->name
+            ]);
+
+            return response()->json(['success'=>'true', 'message'=>'Name has been updated', 200]);
+        }catch(Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+        }
+    }
+
+    public function changePassword(Request $request){
+        try {
+            $userId = $request->user()->id;
+            $validator = Validator::make($request->all(), [
+                'current_password'=>'required',
+                'password' =>  'required',
+                'confirm_password' => 'required|same:password'
+            ]);
+
+            
+            if($validator->fails()){
+                return response()->json(['success'=>false , 'message'=>$validator->errors()], 400);
+            }
+            if(!$userId){
+                return response()->json(['success'=>false , 'message'=>'Unauthorized access'], 401);
+            }
+
+            if (!Hash::check($request->current_password, $request->user()->password)) {
+                return response()->json(['success' => false, 'message' => 'Invalid current password'], 401);
+            }
+
+            $user = User::where('id', $userId)->update(
+                ['password'=>bcrypt($request->password)]
+            );
+
+
+            return response()->json(['success'=>'true', 'message'=>'Password has been updated', 200]);
+
+            
+        } catch (Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+        }
+    }
+
+
+    public function deleteAccount(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                
+            ]);
+
+            if($validator->fails()){
+                return response()->json(['success'=>false , 'message'=>$validator->errors()], 400);
+            }
+
+            $user  = User::where('id', $request->user()->id)->delete();
+            
+
+            return response()->json(['success'=>'true', 'message'=>'Account has been deleted', 200]);
+        }catch(Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+        }
     }
 
     public function checkToken(Request $request){
@@ -109,8 +194,8 @@ class AuthController extends Controller
                 'email'=>$user->email,
                 
             ];
-
-            return response()->json(['success'=>true, 'message'=>'Login Successful', 'data'=>$result], 200)->cookie('token', $token, 15, '/', null, false,true, false, 'Lax' );
+            $ttl = config('jwt.ttl'); // returns JWT_TTL value
+            return response()->json(['success'=>true, 'message'=>'Login Successful', 'data'=>$result], 200)->cookie('token', $token, $ttl, '/', null, false,true, false, 'Lax' );
 
         }catch(Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage()]);
