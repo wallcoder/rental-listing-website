@@ -378,7 +378,7 @@ const filteredImages = computed(() => {
                             <div class="flex flex-col gap-2">
                                 <a :href="`mailto:${item.email}`" class="flex items-center border-2  border-gray-400 hover:border-transparent hover:text-white justify-center gap-2 cursor-pointer p-[8px] px-5 text-center rounded-3xl hover:bg-accent">
                                     <i class='bx bx-envelope'></i><span>Send Email</span></a>
-                                <ButtonLink content="Send Message" icon="bx bx-message-dots" />
+                                <!-- <ButtonLink content="Send Message" icon="bx bx-message-dots" /> -->
                             </div>
                             <button class="hover:underline">Report this listing</button>
                         </div>

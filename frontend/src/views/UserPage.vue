@@ -31,8 +31,8 @@
                 <RouterLink to="/user" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Profile</RouterLink>
                 <RouterLink to="/user/saved" class="text-lg font-semibold hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Saved</RouterLink>
                 <RouterLink to="/user/posts" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Posts</RouterLink>
-                <RouterLink to="/user/posts" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Transactions</RouterLink>
-                <RouterLink to="/user/posts" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Subscription</RouterLink>
+                <RouterLink to="/user/transactions" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Transactions</RouterLink>
+                <RouterLink to="/user/subscriptions" class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg" exact-active-class="text-accent">Subscription</RouterLink>
                 <span class="text-lg font-semibold  hover:bg-gray-100 p-2 rounded-lg cursor-pointer" @click="logout()">Logout</span>
 
 

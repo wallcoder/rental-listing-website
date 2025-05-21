@@ -11,6 +11,10 @@ export const useUserStore = defineStore('user', () => {
     const isLoadingSavedListings = ref(false)
     const isLoadingUserPosts = ref(false)
     const userPosts = ref([])
+    const userTransactions = ref([])
+    const isLoadingUserTransactions = ref(false)
+    const userPlans = ref([])
+    const isLoadingUserPlans = ref(false)
     const getUserPosts = async (refresh=false) => {
         try {
             if(userPosts.value.length > 0 && !refresh){
@@ -58,11 +62,41 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
+    const getUserTransactions = async()=>{
+        try{
+            isLoadingUserTransactions.value = true
+            const response = await axios.get('/user/payments')
+
+            userTransactions.value = response.data.data
+        }catch(err){
+            console.log(err)
+        }finally{
+            isLoadingUserTransactions.value = false
+        }
+    }
+
+     const getUserPlans = async()=>{
+        try{
+            isLoadingUserPlans.value = true
+            const response = await axios.get('/user/plans')
+
+            userPlans.value = response.data.data
+            console.log("res: ", )
+        }catch(err){
+            console.log(err)
+        }finally{
+            isLoadingUserPlans.value = false
+        }
+    }
+
+
+
+
 
     return {
-        savedListings, isLoadingSavedListings, userPosts, isLoadingUserPosts,
-
-        getSavedListings, saveListing,  getUserPosts
+        savedListings, isLoadingSavedListings, userPosts, isLoadingUserPosts, userTransactions, isLoadingUserTransactions,
+        userPlans, isLoadingUserPlans,
+        getSavedListings, saveListing,  getUserPosts, getUserTransactions, getUserPlans
 
 
     }

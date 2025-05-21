@@ -25,14 +25,14 @@ class PostController extends Controller
             $pag = $request->query('pag');
 
             if(!$loc){
-                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted')->with(['location' => function($query){
+                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted')->where('is_boosted', true)->with(['location' => function($query){
                     $query->select('post_id','locality', 'city');
                 }, 'house:post_id,bedroom,bathroom', 'shop:post_id,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
 
                 return response()->json(['success'=>true, 'message'=> 'Posts fetched successfully', 'data'=> $post], 200);
             }
 
-            $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'created_at')->whereHas('location', function($query) use($loc){
+            $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'created_at')->where('is_boosted', true)->whereHas('location', function($query) use($loc){
                 $query->where('city', $loc);
             })->with(['location' => function($query){
                 $query->select('post_id','locality', 'city');
@@ -78,8 +78,8 @@ class PostController extends Controller
         $pag = $request->query('limit', 20);
 
         // Base query
-        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'slug', 'price', 'area', 'created_at')
-            ->where('status', 'active')
+        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'is_boosted', 'slug', 'price', 'area', 'created_at')
+            ->where('status', 'active')->with('house', 'shop')
             ->whereHas('location', function($q) use ($street, $locality, $city, $state, $pincode, $country) {
                 $q->when($street, fn($q) => $q->where('street', 'like', "%$street%"));
                 $q->when($locality, fn($q) => $q->where('locality', 'like', "%$locality%"));
@@ -96,7 +96,7 @@ class PostController extends Controller
             ->when($maxArea, fn($q) => $q->where('area', '<=', $maxArea))
             ->with(['location:post_id,locality,city']);
 
-        // Apply house-specific filters
+       
 if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
     $query->whereHas('house', function($q) use ($minBed, $maxBed, $minBath, $maxBath) {
         if ($minBed) {
@@ -114,7 +114,7 @@ if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
     });
 }
 
-
+        // $query->orderByDesc('is_boosted');
         // Sorting
         switch ($sort) {
             case 'price_asc':

@@ -4,7 +4,12 @@ import { usePlanStore } from '@/stores/plan'
 import { storeToRefs } from 'pinia'
 const { plans, isLoadingPlans } = storeToRefs(usePlanStore())
 const { getPlans } = usePlanStore()
+import { usePayStore } from '@/stores/pay'
+const { payBoost, paySub } = usePayStore()
+const { isLoadingPay } = storeToRefs(usePayStore())
+const isOpenCheckout = ref(false)
 
+const planId = ref(null);
 onMounted(() => {
     getPlans()
 })
@@ -47,28 +52,33 @@ onMounted(() => {
         <div v-else class="flex flex-col  py-10 border-gray-300">
             <h1 class="text-3xl font-semibold text-center " v-motion-fade-visible-once>Our <span
                     class="text-accent">Plans</span></h1>
-          
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 max-w-7xl   md:mx-auto">
                 <!-- Free Plan -->
-                <div class="" :class="p.name === 'boosted' ? 'border-2 border-blue-500 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all bg-blue-50':'border rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all'" v-for="p in plans"
-                    :key="p.name">
+                <div class=""
+                    :class="p.name === 'boosted' ? 'border-2 border-blue-500 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all bg-blue-50' : 'border rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all'"
+                    v-for="p in plans" :key="p.name">
                     <h2 class="text-xl font-semibold mb-2" v-if="p?.name === 'free'">Free Plan</h2>
-                    <h2 class="text-xl font-semibold mb-2 text-blue-700" v-else-if="p?.name === 'boosted'">Boosted Listing</h2>
+                    <h2 class="text-xl font-semibold mb-2 text-blue-700" v-else-if="p?.name === 'boosted'">Boosted Listing
+                    </h2>
                     <h2 class="text-xl font-semibold mb-2" v-else-if="p?.name === 'agent'">Agent Plan</h2>
 
-                    <p class="text-gray-500 mb-4" v-if="p?.name === 'free'">Ideal for individuals with 1–2 listings.</p>
-                    <p class="text-blue-600 mb-4" v-else-if="p?.name === 'boosted'">Ideal for individuals with 1–2 listings.</p>
-                    <p class="text-gray-500 mb-4" v-else-if="p?.name === 'agent'">Perfect for realtors and frequent listers.</p>
+                    <p class="text-gray-500 mb-4" v-if="p?.name === 'free'">Ideal for individuals with 1 listing.</p>
+                    <p class="text-blue-600 mb-4" v-else-if="p?.name === 'boosted'">Ideal for individuals with 1–2 listings.
+                    </p>
+                    <p class="text-gray-500 mb-4" v-else-if="p?.name === 'agent'">Perfect for realtors and frequent listers.
+                    </p>
 
 
                     <div class="text-3xl font-bold mb-4" v-if="p?.name === 'free'">₹{{ p.price }}</div>
-                    <div class="text-3xl font-bold text-blue-800 mb-4" v-else-if="p?.name === 'boosted'">₹{{ p.price }}/post</div>
+                    <div class="text-3xl font-bold text-blue-800 mb-4" v-else-if="p?.name === 'boosted'">₹{{ p.price }}/post
+                    </div>
                     <div class="text-3xl font-bold mb-4" v-else-if="p?.name === 'agent'">₹{{ p.price }}/mo</div>
 
                     <ul class="space-y-2 mb-6 text-sm" v-if="p?.name === 'free'">
-                        <li>✅ 1 Active Listing</li>
-                        <li>❌ No Featured Placement</li>
-                        <li>❌ No Dashboard Insights</li>
+                        <li>✅ 1 Active Listing(visible 1 month)</li>
+                        <li>❌ No Not featured on homepage</li>
+
                     </ul>
                     <ul class="space-y-2 mb-6 text-sm" v-else-if="p?.name === 'boosted'">
                         <li>✅ 1 Listing Boost</li>
@@ -77,25 +87,91 @@ onMounted(() => {
                         <li>✅ Boost lasts 7 days</li>
                     </ul>
                     <ul class="space-y-2 mb-6 text-sm" v-else-if="p?.name === 'agent'">
-                        <li>✅ Unlimited Listings</li>
-                        <li>✅ 5 Free Boosts per Month</li>
-                        <li>✅ Analytics Dashboard</li>
-                        <li>✅ Verified Badge</li>
+                        <li>✅ Unlimited Listings for a month</li>
+                       
+
+
+
                     </ul>
-                    <button v-if="p?.name === 'free'" class="w-full bg-gray-200 text-gray-800 py-2 rounded-3xl font-semibold hover:bg-gray-300">
-                        Current Plan
+                    <button v-if="p?.name === 'free'"
+                        class="w-full bg-gray-200 text-gray-800 py-2 rounded-3xl font-semibold hover:bg-gray-300">
+                        Base Plan
                     </button>
-                    <button v-else-if="p?.name === 'boosted'" class="w-full bg-blue-600 text-white py-2 rounded-3xl font-semibold hover:bg-blue-700">
+                    <button v-else-if="p?.name === 'boosted'"
+                        class="w-full bg-blue-600 text-white py-2 rounded-3xl font-semibold hover:bg-blue-700">
                         Boost a Listing
                     </button>
-                    <button v-else-if="p?.name === 'agent'" class="w-full bg-accent text-white py-2 rounded-3xl font-semibold hover:brightness-110">
-                        Subscribe Now
+                    <button @click="()=>{isOpenCheckout = true; planId=p?.id}" v-else-if="p?.name === 'agent'"
+                        class="w-full bg-accent text-white py-2 rounded-3xl font-semibold hover:brightness-110">
+                        Subscribe Now 
                     </button>
                 </div>
 
-               
+
             </div>
 
+        </div>
+
+        <div class="fixed inset-0 z-30 pointer-events-none">
+            <!-- Overlay -->
+            <Transition>
+                <div v-if="isOpenCheckout" class="w-full h-full bg-black/60 backdrop-blur-sm pointer-events-auto"
+                    @click="isOpenCheckout = false"></div>
+            </Transition>
+
+            <!-- Modal -->
+            <Transition>
+                <div v-if="isOpenCheckout"
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-4  max-h-screen overflow-y-auto">
+                    <div class="flex flex-col md:flex-row gap-2 max-w-4xl mx-auto pointer-events-auto">
+                        <!-- Boost Plan Card -->
+                        <div class="flex-1 min-w-[280px] bg-white p-6  rounded-lg shadow-lg">
+                            <div
+                                class="border-2 border-blue-500 rounded-lg h-full p-4 bg-blue-50 shadow hover:shadow-xl transition-all">
+                                <h2 class="text-xl font-semibold mb-2 text-blue-700">Agent Plan</h2>
+                                <p class="text-blue-600 mb-4">Perfect for realtors and frequent listers.</p>
+                                <div class="text-3xl font-bold text-blue-800 mb-4">₹499</div>
+                                <ul class="space-y-2 mb-6 text-sm text-blue-800">
+                                    <li>✅ Unlimited Listings for a month</li>
+                                    <li>✅ 2 Free boosts</li>
+                                   
+                                </ul>
+
+                            </div>
+                        </div>
+
+                        <!-- Order & Payment Section -->
+                        <div class="flex-1 min-w-[280px] bg-white p-8   rounded-lg shadow-lg">
+                            <div class="flex flex-col gap-2 border border-gray-200 rounded-lg p-6">
+                                <!-- <div class=" border-t ">
+                                    <h3 class="text-lg font-semibold">Order Summary</h3>
+                                    <ul class="text-sm space-y-2 text-gray-700">
+                                        <li><strong>Item:</strong> Boost Listing</li>
+                                        <li><strong>Price:</strong> ₹99</li>
+                                        <li><strong>Total:</strong> ₹99</li>
+                                    </ul>
+                                </div> -->
+
+                                <h2 class="text-xl font-semibold ">Payment</h2>
+                                <p class="text-sm text-gray-600 ">
+                                    To proceed with the payment, click the button below. You'll be redirected to Razorpay to
+                                    complete the transaction securely.
+                                </p>
+
+                                <button :disabled="isLoadingPay" id="razorpay-button" @click="paySub(499, planId)"
+                                    type="button"
+                                    class="w-full bg-blue-600 rounded-3xl text-white py-2  font-semibold hover:bg-blue-700 transition">
+                                    <span v-if="isLoadingPay">Loading..</span>
+                                    <span v-else @click="isOpenCheckout = false">Pay with Razorpay</span>
+                                </button>
+
+                                <ButtonLink content="Cancel" type="button" :isLink="false"
+                                    :fun="() => { isOpenCheckout = false }" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Transition>
         </div>
     </section>
 </template>

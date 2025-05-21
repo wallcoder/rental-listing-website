@@ -163,7 +163,7 @@ const goToPage = (url) => {
       <!-- Catalog -->
       <section v-if="isLoadingBrowse" class="flex flex-col bg-white">
          <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 py-6 px-[4%] lg:px-[8%]">
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 py-6 px-[4%] lg:px-[8%]">
             <div v-for="n in 8" :key="n" class="h-[300px] bg-gray-100 rounded-lg relative overflow-hidden">
                <div
                   class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent">
@@ -177,7 +177,7 @@ const goToPage = (url) => {
                Showing {{ rentals.data.length }} out of {{ rentals.total }} results
             </p>
             <div
-               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4   px-[4%]  lg:px-[8%]">
+               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4   px-[4%]  lg:px-[8%]">
 
                <ItemCard :items="rentals?.data" />
 

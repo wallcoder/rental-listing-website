@@ -3,10 +3,11 @@ import { ref } from "vue";
 import axios from "axios";
 import { push } from "notivue";
 import { useUserStore } from "./user";
-
+import { useRouter } from "vue-router";
 
 export const usePayStore = defineStore('pay', () => {
     const {getUserPosts} = useUserStore()
+    const router = useRouter()
     const isLoadingPay = ref(false)
     const handlePayment = async (amount = 500) => {
         try {
@@ -156,7 +157,7 @@ export const usePayStore = defineStore('pay', () => {
     }
 
 
-    const paySub = async (amount = 500) => {
+    const paySub = async (amount = 500, id) => {
         try {
 
 
@@ -177,7 +178,7 @@ export const usePayStore = defineStore('pay', () => {
                 amount: orderData.amount,
                 currency: "INR",
                 name: "inlist",
-                description: "Accessory Purchase",
+                description: "Subscription Charge",
                 theme: { color: '#F50761'},
                
 
@@ -193,11 +194,18 @@ export const usePayStore = defineStore('pay', () => {
 
                         if (verifyRes.data.success) {
                             push.success("Payment successful!")
-                            const storeResponse = await axios.post('/store-info', {
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-
+                            const storeResponse = await axios.post('/store-payment', {
+                                order_id: response.razorpay_order_id,
+                                ref_id: response.razorpay_payment_id,
+                                amount: orderData.amount,
+                                purpose: 'listing_feature',
+                                plan_id: id,
+                                status: 'success',
+                                currency: 'INR'
                             })
+
+                            const subResponse = await axios.put(`/plan/subscribe/${id}`)
+                            router.push('/user/subscriptions')
 
                         } else {
                             push.error("Payment verification failed.")
@@ -218,6 +226,10 @@ export const usePayStore = defineStore('pay', () => {
             const rzp = new Razorpay(options)
             rzp.open()
         } catch (error) {
+            if(error.response.status == 401 ){
+                push.error("You have to login first")
+                return
+            }
             alert("Unable to initiate payment.")
             console.error(error)
         }finally{

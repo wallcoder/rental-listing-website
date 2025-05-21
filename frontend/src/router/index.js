@@ -13,6 +13,8 @@ import PostBoost from '@/views/PostBoost.vue'
 import Profile from '@/components/UserPage/Profile.vue'
 import Saved from '@/components/UserPage/Saved.vue'
 import Posts from '@/components/UserPage/Posts.vue'
+import Transactions from '@/components/UserPage/Transactions.vue'
+import Subscription from '@/components/UserPage/Subscription.vue'
 
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
@@ -127,6 +129,16 @@ const router = createRouter({
               path: 'saved',
               name: 'user-saved',
               component: Saved
+            },
+             {
+              path: 'transactions',
+              name: 'user-transactions',
+              component: Transactions
+            },
+             {
+              path: 'subscriptions',
+              name: 'user-subscriptions',
+              component: Subscription
             },
 
           ]

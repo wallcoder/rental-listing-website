@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('area', 10, 2);
             $table->boolean('is_boosted')->default(false);
-            $table->dateTime('boosted_until')->nullable();
+            $table->dateTime('boosted_until')->nullable(); 
             $table->integer('clicks')->default(0);
             $table->boolean('is_rented')->default(false);
             $table->enum('status', ['active', 'expired', 'deleted', 'inactive',])->default('active');

@@ -30,8 +30,9 @@ Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::delete('/post/delete/{id}', [PostController::class, 'destroy']);
     Route::put('/post/boost/{id}', [PostController::class, 'setBoost']);
     Route::put('/user/change-password', [AuthController::class, 'changePassword']);
-    Route::post('/post/create', [PostController::class, 'store']);
-    // Route::middleware(AuthPlan::class)->post('/post/create', [PostController::class, 'store']);
+    Route::put('/plan/subscribe/{id}', [PlanController::class, 'update']);
+    // Route::post('/post/create', [PostController::class, 'store']);
+    Route::middleware(AuthPlan::class)->post('/post/create', [PostController::class, 'store']);
     Route::post('/save/create/{id}', [SaveController::class, 'store']);
     Route::get('/saves', [SaveController::class, 'index']);
     Route::get('/saves/listings', [SaveController::class, 'getSavedListings']);
@@ -40,6 +41,8 @@ Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
     Route::post('/store-payment', [PaymentController::class, 'storePayment']);
     Route::post('/store-failed-payment', [RazorpayController::class, 'storeFailed']);
+    Route::get('/user/payments', [PaymentController::class, 'getUserPayments']);
+    Route::get('/user/plans', [PlanController::class, 'show']);
 });
 Route::get('/posts', [PostController::class, "index"]);
 Route::get('/top-locations', [PostController::class, "getTopLocations"]);

@@ -7,12 +7,12 @@ import WhyChooseUs from '@/components/HomePage/WhyChooseUs.vue'
 import Whatsapp from '@/components/Whatsapp.vue'
 import CTA from '@/components/HomePage/CTA.vue'
 import Plans from '@/components/HomePage/Plans.vue'
-import {onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import { push } from "notivue";
 
-onMounted(()=>{
+onMounted(() => {
     const message = localStorage.getItem('message')
-    if(message){
+    if (message) {
         push.success(message)
         localStorage.removeItem('message')
     }
@@ -26,7 +26,9 @@ onMounted(()=>{
         <PopularAreas />
         <FeaturedRentals />
         <WhyChooseUs />
-        <Plans />
+        <div id="plans">
+            <Plans />
+        </div>
         <CTA />
         <Whatsapp />
     </section>

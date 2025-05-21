@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use Exception;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Container\Attributes\Log;
 use Illuminate\Http\Request;
@@ -79,6 +80,28 @@ public function storePayment(Request $request)
             'error' => $e->getMessage(),
         ], 500);
     }
+}
+
+
+public function getUserPayments(Request $request){
+
+    try{
+         $payment = Payment::where('user_id', $request->user()->id)->get();
+
+          return response()->json([
+            'success' => true,
+            'message' => 'Payment fetched.',
+            'data' => $payment,
+        ]);
+    }catch(Exception $e){
+         return response()->json([
+            'success' => false,
+            'message' => 'Failed to store payment.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+   
+
 }
 
 }

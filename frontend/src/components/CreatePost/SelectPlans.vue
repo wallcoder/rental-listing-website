@@ -89,9 +89,7 @@ onMounted(() => {
                     </ul>
                     <ul class="space-y-2 mb-6 text-sm" v-else-if="p?.name === 'agent'">
                         <li>✅ Unlimited Listings</li>
-                        <li>✅ 5 Free Boosts per Month</li>
-                        <li>✅ Analytics Dashboard</li>
-                        <li>✅ Verified Badge</li>
+                        
                     </ul>
                     <button type="submit" v-if="p?.name === 'free'"
                         class="w-full bg-gray-200 text-gray-800 py-2 rounded-3xl font-semibold hover:bg-gray-300">
@@ -101,10 +99,10 @@ onMounted(() => {
                         class="w-full bg-blue-600 text-white py-2 rounded-3xl font-semibold hover:bg-blue-700">
                         Post Now (With Boost)
                     </button>
-                    <button v-else-if="p?.name === 'agent'"
-                        class="w-full bg-accent text-white py-2 rounded-3xl font-semibold hover:brightness-110">
+                    <RouterLink to="/#plans" v-else-if="p?.name === 'agent'"
+                        class="w-full bg-accent  text-white py-2 rounded-3xl font-semibold hover:brightness-110">
                         Subscribe Now
-                    </button>
+                    </RouterLink>
                 </div>
 
 

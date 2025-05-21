@@ -35,8 +35,10 @@ const { submit } = createPost
             <ShopDetails />
             <ContactDetails />
             <LocationDetails />
-            
-            <SelectPlans />
+            <div>
+                <ButtonLink type="submit" content="Post this Property" :isLink="false" />
+            </div>
+            <!-- <SelectPlans /> -->
 
 
 
