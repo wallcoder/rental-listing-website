@@ -128,25 +128,96 @@ onClickOutside(dropdown, (event) => {
                <i class="bx bx-x text-3xl cursor-pointer hover:text-accent" @click="isOpenSidebar = false"
                   :class="isOpenSidebar ? 'rotate-[720deg]' : ''"></i>
             </div>
-            <div  v-if="isLoggedin" @click="isOpenSidebar = false" class="flex gap-2 items-center rounded-lg hover:bg-gray-100 p-2 cursor-pointer">
+            <!-- <div v-if="isLoggedin" @click="isOpenSidebar = false"
+               class="flex gap-2 items-center rounded-lg hover:bg-gray-100 p-2 cursor-pointer">
                <i class='bx bx-user text-3xl rounded-full p-2 bg-gray-100 '></i>
                <RouterLink to="/user" class="flex flex-col" v-if="user">
                   <div>{{ user.name }}</div>
                   <span class="text-gray-400">{{ user.email }}</span>
                </RouterLink>
+            </div> -->
+            <!-- <RouterLink @click="isOpenSidebar = false" to="/" class="px-4 py-2 font-semibold "
+               exactActiveClass="text-accent">Home</RouterLink>
+            <RouterLink @click="isOpenSidebar = false"
+               to="/browse?street=&locality=&city=&state=Mizoram&pincode=&country=India" class="px-4 py-2 font-semibold "
+               exactActiveClass="text-accent">All Listings</RouterLink>
+            <RouterLink @click="isOpenSidebar = false" to="/user/saved" class="px-4 py-2 font-semibold "
+               exactActiveClass="text-accent" v-if="isLoggedin">Saved</RouterLink>
+            <RouterLink @click="isOpenSidebar = false" to="/user/posts" class="px-4 py-2 font-semibold "
+               exactActiveClass="text-accent" v-if="isLoggedin">Posts</RouterLink>
+            <RouterLink @click="isOpenSidebar = false" to="/user/login" class="px-4 py-2 font-semibold "
+               exactActiveClass="text-accent" v-if="!isLoggedin">Sign In</RouterLink>
+            <span @click="isOpenSidebar = false; logout()" class="px-4 py-2 font-semibold cursor-pointer"
+               exactActiveClass="text-accent" v-if="isLoggedin">Logout</span> -->
+            <div class="flex flex-col  gap-8">
+               <div class="flex flex-col gap-3">
+                  <div v-if="isLoggedin" @click="isOpenSidebar = false"
+                     class="flex gap-2 items-center rounded-lg hover:bg-gray-100 p-2 cursor-pointer">
+                     <i class='bx bx-user text-3xl rounded-full p-2 bg-gray-100 '></i>
+                     <RouterLink to="/user" class="flex flex-col" v-if="user">
+                        <div>{{ user.name }}</div>
+                        <span class="text-gray-400">{{ user.email }}</span>
+                     </RouterLink>
+                  </div>
+                  <h3 class="text-grey-light font-bold pl-3">NAVIGATION</h3>
+
+                  <nav class="flex flex-col text-grey-light font-semibold">
+                     <RouterLink to="/" exact-active-class="text-acc hover:text-acc"
+                        :class="[$route.path === '/' ? 'text-accent hover:text-accent' : '']"
+                        class="py-2 w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false">
+                        <i class="bx bx-home-alt text-xl"></i> <span>Home</span>
+                     </RouterLink>
+                     <RouterLink to="/create-post" exact-active-class="text-acc hover:text-acc"
+                        :class="[$route.path === '/create-post' ? 'text-accent hover:text-accent' : '']"
+                        class="py-2 w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false">
+                        <i class="bx bx-plus text-xl"></i> <span>Add Your Property</span>
+                     </RouterLink>
+
+                     <RouterLink to="/browse?street=&locality=&city=&state=Mizoram&pincode=&country=India"
+                        exact-active-class="text-acc hover:text-acc"
+                        :class="[$route.path === '/browse' ? 'text-accent hover:text-accent' : '']"
+                        class="py-2 w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false">
+                        <i class="bx bx-search-alt text-xl"></i> <span>All Listings</span>
+                     </RouterLink>
+
+                     <RouterLink to="/user/saved" v-if="isLoggedin" exact-active-class="text-acc hover:text-acc"
+                        :class="[$route.path === '/user/saved' ? 'text-accent hover:text-accent' : '']"
+                        class="py-2 w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false">
+                        <i class="bx bx-bookmark text-xl"></i> <span>Saved</span>
+                     </RouterLink>
+
+                     <RouterLink to="/user/posts" v-if="isLoggedin" exact-active-class="text-acc hover:text-acc"
+                        :class="[$route.path === '/user/posts' ? 'text-accent hover:text-accent' : '']"
+                        class="py-2 w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false">
+                        <i class="bx bx-edit-alt text-xl"></i> <span>Posts</span>
+                     </RouterLink>
+
+                     <RouterLink to="/user/login" v-if="!isLoggedin" exact-active-class="text-acc hover:text-acc"
+                        :class="[$route.path === '/user/login' ? 'text-accent hover:text-accent' : '']"
+                        class="py-2 w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false">
+                        <i class="bx bx-log-in text-xl"></i> <span>Sign In</span>
+                     </RouterLink>
+                     <button v-if="isLoggedin"
+                        class="py-2   w-full flex gap-2 items-center group pl-[20px] hover:bg-gray-100 hover:pl-[24px]"
+                        @click="isOpenSidebar = false; logout()"><i class="bx bx-log-out text-xl"></i>
+                        <span>Logout</span></button>
+                  </nav>
+
+               </div>
+
             </div>
-            <RouterLink @click="isOpenSidebar = false" to="/" class="px-4 py-2 font-semibold " exactActiveClass="text-accent">Home</RouterLink>
-            <RouterLink @click="isOpenSidebar = false" to="/browse?street=&locality=&city=&state=Mizoram&pincode=&country=India"  class="px-4 py-2 font-semibold " exactActiveClass="text-accent">All Listings</RouterLink>
-            <RouterLink @click="isOpenSidebar = false" to="/user/saved" class="px-4 py-2 font-semibold " exactActiveClass="text-accent" v-if="isLoggedin">Saved</RouterLink>
-            <RouterLink @click="isOpenSidebar = false"  to="/user/posts" class="px-4 py-2 font-semibold " exactActiveClass="text-accent" v-if="isLoggedin">Posts</RouterLink>
-            <RouterLink @click="isOpenSidebar = false"  to="/user/login" class="px-4 py-2 font-semibold " exactActiveClass="text-accent" v-if="!isLoggedin">Sign In</RouterLink>
-            <span @click="isOpenSidebar = false; logout()"  class="px-4 py-2 font-semibold cursor-pointer" exactActiveClass="text-accent" v-if="isLoggedin">Logout</span>
-            
 
 
+
+         </div>
 
       </div>
-
-   </div>
-</header></template>
+   </header>
+</template>
 <style scoped></style>

@@ -11,7 +11,7 @@ const { category, type } = storeToRefs(createPost)
 </script>
 <template>
     <div class="rounded-xl bg-white p-4 flex flex-col gap-2 border border-gray-300">
-        <h2 class="text-xl">Property Information</h2>
+        <h2 class="text-xl font-semibold">Property Information</h2>
         <div class="flex flex-col">
             <h2 class="mb-1">Category<span class="text-accent">*</span></h2>
             <div class="flex gap-1">
@@ -26,6 +26,11 @@ const { category, type } = storeToRefs(createPost)
                     <label for="shop" :class="category === 'shop' ? 'bg-accent text-white border-accent ' : 'bg-gray-100'"
                         class="cursor-pointer p-1 hover:bg-accent hover:text-white rounded-2xl px-4 ">Shop</label>
                     <input v-model="category" type="radio" hidden name="category" value="shop" id="shop" required>
+                </div>
+                 <div class="flex flex-col">
+                    <label for="home_stay" :class="category === 'home_stay' ? 'bg-accent text-white border-accent ' : 'bg-gray-100'"
+                        class="cursor-pointer p-1 hover:bg-accent hover:text-white rounded-2xl px-4 ">Home Stay</label>
+                    <input v-model="category" type="radio" hidden name="category" value="home_stay" id="home_stay" required>
                 </div>
             </div>
         </div>

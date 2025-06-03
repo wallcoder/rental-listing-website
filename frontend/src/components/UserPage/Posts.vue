@@ -7,10 +7,10 @@ import { useUtilStore } from '@/stores/util';
 import ButtonLink from '@/components/ButtonLink.vue'
 import axios from 'axios';
 import { push } from 'notivue'
-import {usePayStore} from '@/stores/pay'
+import { usePayStore } from '@/stores/pay'
 
-const {payBoost} = usePayStore()
-const {isLoadingPay} = storeToRefs(usePayStore())
+const { payBoost } = usePayStore()
+const { isLoadingPay } = storeToRefs(usePayStore())
 const { userPosts, isLoadingUserPosts } = storeToRefs(useUserStore())
 const { getUserPosts } = useUserStore()
 const { timeAgo } = useUtilStore()
@@ -22,27 +22,30 @@ onMounted(() => {
 })
 const isOpenCheckout = ref(false)
 const postId = ref(null)
+
+
 const deletePost = async (id) => {
-    try {
+  try {
+    if (!id) {
+      push.warning('No post has been selected')
+      return
+    }
+    isOpenConfirmDelete.value = false
+    const response = await axios.delete(`post/delete/${id}`)
+    push.success(response.data.message)
+    
 
-        if (!id) {
-            push.warning('No post has been selected')
-            return
-        }
-
-        const response = await axios.delete(`post/delete/${id}`)
-        push.success(response.data.message)
-        console.log(response.data)
-        isOpenConfirmDelete.value = false
-        getUserPosts(true)
-
-
-    } catch (err) {
-        console.log(err)
-
+    // Remove the deleted post from userPosts array
+    const index = userPosts.value.findIndex(post => post.id === id)
+    if (index !== -1) {
+      userPosts.value.splice(index, 1)
     }
 
+  } catch (err) {
+    console.log(err)
+  }
 }
+
 
 
 
@@ -141,12 +144,12 @@ const deletePost = async (id) => {
                             <div class="flex gap-2 items-center">
 
                                 <!-- <span v-if="n.is_boosted" class="text-xs text-gray-600">Boost Expires in 2 days</span> -->
-                                <button v-if="!n.is_boosted" @click="()=>{isOpenCheckout = true; postId=n.id}"
-                                    class="flex items-center py-1 px-2 rounded-xl bg-green-500 text-white hover:brightness-110 gap-2"><i
-                                        class="bx bx-rocket"></i> Boost</button>
+                                <button v-if="!n.is_rented" @click="() => { isOpenCheckout = true; postId = n.id }"
+                                    class="flex items-center py-1 px-2 rounded-xl bg-accent text-white hover:brightness-110 gap-2">Not
+                                    Rented</button>
                                 <button v-else type="button"
-                                    class="flex   items-center cursor-default  py-1 px-2 rounded-xl bg-green-500 text-white  gap-2"><i
-                                        class="bx bx-rocket"></i> Boosted</button>
+                                    class="flex   items-center cursor-pointer  py-1 px-2 rounded-xl bg-green-500 text-white  gap-2">
+                                    Rented</button>
 
                                 <i class='bx bx-edit p-2 cursor-pointer rounded-full border hover:bg-gray-200 '></i>
                                 <i @click="() => { isOpenConfirmDelete = true; deleteId = n.id }"
@@ -240,10 +243,7 @@ const deletePost = async (id) => {
                         This action is permanent and cannot be undone.
 
                     </p>
-                    <p class="text-sm font-semibold">
 
-                        Please note: Any amount paid for listing this post will not be refunded.
-                    </p>
                     <div class="flex flex-col md:flex-row w-full  gap-2 ">
                         <ButtonLink :isLink="false" type="button" content="Proceed" :fun="() => { deletePost(deleteId) }" />
                         <ButtonLink :isLink="false" type="button" content="Cancel "
@@ -301,10 +301,11 @@ const deletePost = async (id) => {
                                     complete the transaction securely.
                                 </p>
 
-                                <button :disabled="isLoadingPay" id="razorpay-button" @click="payBoost(99, postId)" type="button"
+                                <button :disabled="isLoadingPay" id="razorpay-button" @click="payBoost(99, postId)"
+                                    type="button"
                                     class="w-full bg-blue-600 rounded-3xl text-white py-2  font-semibold hover:bg-blue-700 transition">
                                     <span v-if="isLoadingPay">Loading..</span>
-                                    <span v-else @click="isOpenCheckout=false">Pay with Razorpay</span>
+                                    <span v-else @click="isOpenCheckout = false">Pay with Razorpay</span>
                                 </button>
 
                                 <ButtonLink content="Cancel" type="button" :isLink="false"
@@ -334,5 +335,4 @@ const deletePost = async (id) => {
 
 .lamp-glow {
     animation: lamp-glow 2s ease-in-out infinite;
-}
-</style>
+}</style>

@@ -9,6 +9,7 @@ use App\Http\Controllers\SaveController;
 use App\Http\Middleware\AuthPlan;
 use App\Http\Middleware\JwtAuthenticate;
 use App\Models\User;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,8 @@ Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::put('/user/change-password', [AuthController::class, 'changePassword']);
     Route::put('/plan/subscribe/{id}', [PlanController::class, 'update']);
     // Route::post('/post/create', [PostController::class, 'store']);
-    Route::middleware(AuthPlan::class)->post('/post/create', [PostController::class, 'store']);
+    Route::post('/post/create', [PostController::class, 'store']);
+    Route::post('/post/mark-rent/{id}', [PostController::class, 'markRented']);
     Route::post('/save/create/{id}', [SaveController::class, 'store']);
     Route::get('/saves', [SaveController::class, 'index']);
     Route::get('/saves/listings', [SaveController::class, 'getSavedListings']);
@@ -43,6 +45,10 @@ Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::post('/store-failed-payment', [RazorpayController::class, 'storeFailed']);
     Route::get('/user/payments', [PaymentController::class, 'getUserPayments']);
     Route::get('/user/plans', [PlanController::class, 'show']);
+    Route::post('/user/kyc', [PaymentController::class, 'registerSubMerchant']);
+    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'handler'] )->middleware([ 'signed'])->name('verification.verify');
+    
+   
 });
 Route::get('/posts', [PostController::class, "index"]);
 Route::get('/top-locations', [PostController::class, "getTopLocations"]);

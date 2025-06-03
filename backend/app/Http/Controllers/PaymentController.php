@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Container\Attributes\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log as FacadesLog;
 use Razorpay\Api\Api;
 
@@ -103,5 +104,81 @@ public function getUserPayments(Request $request){
    
 
 }
+
+public function registerSubMerchant(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'phone' => 'required|string',
+        'type' => 'required|string|in:route',
+        'reference_id' => 'required|string',
+        'legal_business_name' => 'required|string',
+        'business_type' => 'required|string',
+        'contact_name' => 'required|string',
+        'profile.category' => 'required|string',
+        'profile.subcategory' => 'required|string',
+        'profile.addresses.registered.street1' => 'required|string',
+        'profile.addresses.registered.street2' => 'nullable|string',
+        'profile.addresses.registered.city' => 'required|string',
+        'profile.addresses.registered.state' => 'required|string',
+        'profile.addresses.registered.postal_code' => 'required|string',
+        'profile.addresses.registered.country' => 'required|string|size:2',
+        'legal_info.pan' => 'required|string',
+        'legal_info.gst' => 'required|string',
+    ]);
+
+    $payload = [
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'type' => $request->type,
+        'reference_id' => $request->reference_id,
+        'legal_business_name' => $request->legal_business_name,
+        'business_type' => "individual",
+        'contact_name' => $request->contact_name,
+        'profile' => [
+            'category' => "healthcare",
+            'subcategory' => "clinic",
+            'addresses' => [
+                'registered' => [
+                    'street1' => $request->input('profile.addresses.registered.street1'),
+                    'street2' => $request->input('profile.addresses.registered.street2'),
+                    'city' => $request->input('profile.addresses.registered.city'),
+                    'state' => $request->input('profile.addresses.registered.state'),
+                    'postal_code' => $request->input('profile.addresses.registered.postal_code'),
+                    'country' => $request->input('profile.addresses.registered.country'),
+                ],
+            ],
+        ],
+        'legal_info' => [
+            'pan' => "AAACL1234C",
+            'gst' => "18AABCU9603R1ZM",
+        ],
+    ];
+
+    try {
+        $response = Http::withBasicAuth(config('services.razorpay.key_id'), config('services.razorpay.key_secret'))
+            ->post('https://api.razorpay.com/v2/accounts', $payload);
+
+        if ($response->successful()) {
+            $accountData = $response->json();
+
+            return response()->json([
+                'message' => 'Sub-merchant registered successfully',
+                'account_id' => $accountData['id'],
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Failed to create linked account',
+                'details' => $response->json(), 'data' => $request->all()
+            ], $response->status());
+        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error communicating with Razorpay',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 
 }

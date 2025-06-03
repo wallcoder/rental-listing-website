@@ -31,8 +31,8 @@ onMounted(() => {
             </div>
 
             <!-- Cards Grid -->
-            <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:px-18 lg:px-24">
-                <div v-for="n in 6" :key="n" class="rounded-lg overflow-hidden bg-gray-100 h-56 relative">
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:px-18 ">
+                <div v-for="n in 8" :key="n" class="rounded-lg overflow-hidden bg-gray-100 h-56 relative">
                     <div
                         class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent">
                     </div>
@@ -51,11 +51,11 @@ onMounted(() => {
 
         <div  v-else class="flex flex-col gap-4 v-else py-10 border-b-2 border-gray-200">
             
-            <h1 class="text-3xl font-semibold text-center">Featured <span class="text-accent">Listings</span></h1>
+            <h1 class="text-3xl font-semibold text-center">Recent <span class="text-accent">Listings</span></h1>
             <div v-if="featuredRentals.length > 0">
                
                 <div
-                    class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 xxl:grid-cols-4 gap-3 md:px-18 lg:px-24">
+                    class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:px-18 ">
                     <ItemCard :items="featuredRentals" />
 
 

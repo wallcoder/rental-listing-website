@@ -140,7 +140,7 @@ onMounted(() => {
 
             </div>
             <div v-else class="text-center py-6 text-lg text-gray-600 ">
-                You have no posts
+                You have no transactions
 
             </div>
 
