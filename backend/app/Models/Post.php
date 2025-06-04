@@ -39,5 +39,9 @@ class Post extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function booking(): HasMany{
+        return $this->hasMany(Booking::class);
+    }
+
     
 }

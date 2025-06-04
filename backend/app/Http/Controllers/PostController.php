@@ -25,7 +25,7 @@ class PostController extends Controller
             $pag = $request->query('pag');
 
             if(!$loc){
-                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted')->where('is_boosted', true)->with(['location' => function($query){
+                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted', 'is_rented', 'name')->with(['location' => function($query){
                     $query->select('post_id','locality', 'city');
                 }, 'house:post_id,bedroom,bathroom', 'shop:post_id,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
 
@@ -78,7 +78,7 @@ class PostController extends Controller
         $pag = $request->query('limit', 20);
 
         // Base query
-        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'is_boosted', 'slug', 'price', 'area', 'created_at')
+        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'is_boosted', 'is_rented', 'name',  'slug', 'price', 'area', 'created_at')
             ->where('status', 'active')->with('house', 'shop')
             ->whereHas('location', function($q) use ($street, $locality, $city, $state, $pincode, $country) {
                 $q->when($street, fn($q) => $q->where('street', 'like', "%$street%"));
@@ -97,7 +97,7 @@ class PostController extends Controller
             ->with(['location:post_id,locality,city']);
 
        
-if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
+if (($category === 'house' || $category == 'home_stay') && ($minBed || $maxBed || $minBath || $maxBath)) {
     $query->whereHas('house', function($q) use ($minBed, $maxBed, $minBath, $maxBath) {
         if ($minBed) {
             $q->where('bedroom', '>=', $minBed);
@@ -216,8 +216,10 @@ if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
                 'user_id'=>$user,
                 'category'=>$request->input('category'),
                 'type'=>$request->input('type'),
+                'name'=>$request->input('name'),
                 'area'=>$request->input('area'),
                 'price'=>$request->input('price'),
+                'duration_type'=>$request->input('durationType'),
                 'is_boosted'=>$boost,
                 'boosted_until'=>$boostExpiresAt,
                 'thumbnail'=>$thumbnail,
@@ -231,7 +233,7 @@ if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
 
             );
 
-           if($request->category == "house"){
+           if($request->category == "house" || $request->category == "home_stay"){
             $house = House::create([
                 'post_id'=>$post->id,
                
@@ -325,7 +327,7 @@ if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
             }
 
             $posts = Post::where('user_id', $userId)
-            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'is_boosted', 'created_at')
+            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'is_boosted', 'is_rented', 'name', 'created_at')
             ->with([
                 'location:post_id,locality,city',
                 'house:post_id,bedroom,bathroom,description',
@@ -358,7 +360,7 @@ if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
         ->select('city', DB::raw('COUNT(*) as post_count'))
         ->groupBy('city')
         ->orderByDesc('post_count')
-        ->limit(3)
+        ->limit(4)
         ->get();
 
     return response()->json(['success'=>true, 'message'=>'Top Location Fetched', 'data'=>$topLocations], 200);
@@ -381,6 +383,26 @@ if ($category === 'house' && ($minBed || $maxBed || $minBath || $maxBath)) {
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    public function markRented(Request $request, string $id){
+        try{
+
+            $post = Post::where('id', $id)->first();
+
+            if($post->is_rented){
+                $mark = $post->update(['is_rented' => false]);
+
+            }else{
+                $mark = $post->update(['is_rented' => true]);
+            }
+
+            return response()->json(['success'=>true, 'message'=>'Post updated'], 200);
+
+        }catch(Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()], 500);
+
+        }
     }
 
     /**

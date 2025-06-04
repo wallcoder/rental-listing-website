@@ -18,15 +18,16 @@ import SelectPlans from '@/components/CreatePost/SelectPlans.vue'
 import { useCreatePostStore } from '@/stores/createPost'
 const createPost = useCreatePostStore()
 const { submit } = createPost
+const {loading} = storeToRefs(createPost)
 
 </script>
 
 
 
 <template>
-    <section class="items-center justify-center px-[2%] lg:px-[16%] py-10 flex gap-4">
+    <section class="items-center justify-center px-[4%] lg:px-[16%] py-10 flex gap-4">
         <form class="flex flex-col gap-2 w-full" @submit.prevent="submit">
-            <h1 class="text-2xl">Create a Post</h1>
+            <h1 class="text-2xl font-semibold">Create a Post</h1>
 
             <PropertyInformation />
             <Thumbnail />
@@ -36,7 +37,7 @@ const { submit } = createPost
             <ContactDetails />
             <LocationDetails />
             <div>
-                <ButtonLink type="submit" content="Post this Property" :isLink="false" />
+                <ButtonLink type="submit" content="Post this Property" :isLink="false" :loading="loading" />
             </div>
             <!-- <SelectPlans /> -->
 

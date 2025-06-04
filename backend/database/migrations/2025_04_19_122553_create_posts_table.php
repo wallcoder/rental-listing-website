@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->enum('category', ['house', 'shop']);
+            $table->enum('category', ['house', 'shop', 'home_stay']);
             $table->string('type');
+            $table->string('name')->nullable();
             $table->string('thumbnail');
             $table->string('owner_name')->nullable;
             $table->string('phone');
             $table->string('email');
             $table->string('slug');
+            $table->enum('duration_type', ['day', 'month']);
             $table->decimal('price', 10, 2);
             $table->decimal('area', 10, 2);
             $table->boolean('is_boosted')->default(false);

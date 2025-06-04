@@ -10,12 +10,14 @@ import ItemPage from '../views/ItemPage.vue'
 import CreatePost from '../views/CreatePost.vue'
 import UserPage from '@/views/UserPage.vue'
 import PostBoost from '@/views/PostBoost.vue'
+import Checkout from '@/views/Checkout.vue'
 import Profile from '@/components/UserPage/Profile.vue'
 import Saved from '@/components/UserPage/Saved.vue'
 import Posts from '@/components/UserPage/Posts.vue'
+import KYC from '@/components/UserPage/KYC.vue'
 import Transactions from '@/components/UserPage/Transactions.vue'
 import Subscription from '@/components/UserPage/Subscription.vue'
-
+import NotFound from '@/views/NotFound.vue'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 
@@ -58,20 +60,22 @@ const router = createRouter({
           path: '/create-post',
           name: 'create-post',
           component: CreatePost,
-          
+
           props: true,
-          meta: { 
+          meta: {
             title: 'Create Post',
-            requiresAuth: true }
+            requiresAuth: true
+          }
         },
         {
           path: '/boost',
           name: 'boost',
           component: PostBoost,
           props: true,
-          meta: { 
+          meta: {
             title: 'Boost',
-            requiresAuth: true }
+            requiresAuth: true
+          }
         },
         {
           path: '/rental-properties/:slug',
@@ -86,13 +90,13 @@ const router = createRouter({
           path: '/user/login',
           name: 'user-login',
           component: UserLogin,
-          meta: {  title: 'Login', requiresLogout: true }
+          meta: { title: 'Login', requiresLogout: true }
         },
         {
           path: '/user/signup',
           name: 'user-signup',
           component: UserSignup,
-          meta: {  title: 'Sign Up',requiresLogout: true }
+          meta: { title: 'Sign Up', requiresLogout: true }
         },
         {
           path: '/user/request-password-reset',
@@ -113,7 +117,7 @@ const router = createRouter({
           name: 'user-page',
           component: UserPage,
 
-          meta: {  title: 'User Page', requiresAuth: true },
+          meta: { title: 'User Page', requiresAuth: true },
           children: [
             {
               path: '',
@@ -130,19 +134,35 @@ const router = createRouter({
               name: 'user-saved',
               component: Saved
             },
-             {
+            {
               path: 'transactions',
               name: 'user-transactions',
               component: Transactions
             },
-             {
-              path: 'subscriptions',
-              name: 'user-subscriptions',
-              component: Subscription
+            {
+              path: 'kyc',
+              name: 'kyc',
+              component: KYC
             },
+            // {
+            //   path: 'subscriptions',
+            //   name: 'user-subscriptions',
+            //   component: Subscription
+            // },
 
           ]
         },
+        {
+          path: 'checkout/:slug',
+          name: 'checkout',
+          component: Checkout
+        },
+        
+        {
+          path: '/:pathMatch(.*)*',
+          component: NotFound,
+          meta: { title: 'Page Not Found' }
+        }
 
       ]
     },

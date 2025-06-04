@@ -52,33 +52,37 @@ function timeAgo(timestamp) {
 
 </script>
 <template>
-    
-   
     <div class="flex flex-col relative   transition-shadow duration-300 bg-white rounded-lg overflow-hidden gap-1"
         v-for="n in items" :key="n.id">
         <!-- IMAGE -->
 
-        <RouterLink :to="`/rental-properties/${n.slug}`" class="relative ">
+        <RouterLink :to="`/rental-properties/${n.slug}`" class="relative">
             <div class="w-full h-[250px] overflow-hidden rounded-xl">
-            <img :src="`${api}/${n.thumbnail}`" class="w-full  rounded-xl h-[250px] object-cover hover:scale-[1.04] transition-all duration-300" :alt="n.id">
+                <img :src="`${api}/${n.thumbnail}`" :class="[
+                    'w-full rounded-xl h-[250px] object-cover hover:scale-[1.04] transition-all duration-300',
+                    n?.is_rented ? 'filter grayscale' : ''
+                ]" :alt="n.id" />
             </div>
+            
             <div class="flex justify-between absolute -bottom-4 right-4 gap-2">
-                <div v-if="n?.category == 'house'"
-                    class="bg-green-400  rounded-full text-2xl -bottom-4 right-4 bx bx-home-alt-2 text-white p-2">
+                <div v-if="n?.category == 'house' "
+                    class="bg-green-400 rounded-full text-2xl bx bx-home-alt-2 text-white p-2"></div>
+                <div v-else-if="n?.category == 'home_stay'"
+                    class="bg-yellow-400 rounded-full text-2xl bx bx-home-alt-2 text-white p-2"></div>
+                <div v-else class="bg-accent rounded-full text-2xl bx bx-store-alt text-white p-2"></div>
 
+                <div v-if="n?.is_boosted" class="bg-blue-500 rounded-full text-2xl text-white p-2 lamp-glow bx bx-rocket">
                 </div>
-                <div v-else class="bg-accent  rounded-full text-2xl -bottom-4 right-4 bx bx-store-alt text-white p-2">
-
-                </div>
-                <div v-if="n?.is_boosted" class="bg-blue-500 rounded-full text-2xl   text-white  p-2 lamp-glow bx bx-rocket">
-                </div>
-
+            </div>
+            <div v-if="n?.is_rented" class="absolute top-4 -left-10 px-10 text-white  bg-accent rotate-[-45deg]">
+                Rented
             </div>
         </RouterLink>
 
 
+
         <!-- ATTRIBUTES -->
-        <div v-if="n?.category == 'house'" class="py-2 flex flex-col p-2">
+        <div v-if="n?.category == 'house' || n?.category == 'home_stay'" class="py-2 flex flex-col p-2">
             <h1 v-if="n?.location?.city || n?.location?.locality" class="text-sm text-gray-600"><span
                     v-if="n.location?.locality">{{ n?.location?.locality }},</span> <span v-if="n.location?.city">{{
                         n?.location?.city }}</span> </h1>
@@ -98,7 +102,8 @@ function timeAgo(timestamp) {
             </div>
 
             <div class="flex justify-between w-full">
-                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span class="text-xs text-gray-700">/mo</span></span>
+                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span
+                        class="text-xs text-gray-700">/mo</span></span>
                 <!-- BOOKMARK -->
                 <i class='bx bx-bookmark p-2  rounded-full border cursor-pointer hover:bg-gray-100'></i>
 
@@ -129,7 +134,8 @@ function timeAgo(timestamp) {
             </div>
 
             <div class="flex justify-between w-full">
-                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span class="text-xs text-gray-700">/mo</span></span>
+                <span class="text-accent font-semibold"><span>₹{{ n?.price }}</span><span
+                        class="text-xs text-gray-700">/mo</span></span>
                 <!-- BOOKMARK -->
                 <i class='bx bx-bookmark p-2 cursor-pointer  rounded-full border hover:bg-gray-100'></i>
 

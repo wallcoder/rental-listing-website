@@ -48,7 +48,7 @@ export const usePostStore = defineStore('store', () => {
     const getFeaturedRentals = async (force = false,) => {
         try {
             if (featuredRentals.value.length > 0 && !force) {
-                console.log("not refetch")
+                
                 return
             }
             isLoading.value = true;

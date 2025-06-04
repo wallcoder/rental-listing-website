@@ -26,9 +26,9 @@ onMounted(() => {
         <PopularAreas />
         <FeaturedRentals />
         <WhyChooseUs />
-        <div id="plans">
+        <!-- <div id="plans">
             <Plans />
-        </div>
+        </div> -->
         <CTA />
         <Whatsapp />
     </section>

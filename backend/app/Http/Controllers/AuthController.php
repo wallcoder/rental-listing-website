@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\UserPlan;
 use Error;
 use Exception;
+use Filament\Events\Auth\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -43,13 +45,15 @@ class AuthController extends Controller
             'password'=>bcrypt($request->password)
         ]);
 
-        $userPlan = UserPlan::create([
-            'user_id'=>$user->id,
-            'plan_id'=>1,
-            'is_active'=>true
-        ]);
+        // $userPlan = UserPlan::create([
+        //     'user_id'=>$user->id,
+        //     'plan_id'=>1,
+        //     'is_active'=>true
+        // ]);
 
-       $token = JWTAuth::fromUser($user);
+        // event(new Registered($user));
+
+        $token = JWTAuth::fromUser($user);
         $result = [
             'name'=>$user->name,
             'email'=>$user->email
@@ -154,6 +158,13 @@ class AuthController extends Controller
         }
     }
 
+   
+    public function handler (EmailVerificationRequest $request) {
+    $request->fulfill();
+ 
+    return response()->json(['success'=>'true', 'message'=>'email verified'], 200);
+}
+
     public function checkToken(Request $request){
         try{
 
@@ -162,7 +173,8 @@ class AuthController extends Controller
         $user = JWTAuth::setToken($token)->authenticate();
         $result = [
             'name'=>$user->name,
-            'email'=>$user->email
+            'email'=>$user->email,
+            'merchant_id'=>$user->merchant_id
         ];
         return response()->json(['success'=>true, 'message'=>'Token is valid', 'data'=>$result], 200);
     }catch(Exception $e){

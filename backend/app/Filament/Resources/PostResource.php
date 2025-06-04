@@ -123,44 +123,87 @@ class PostResource extends Resource
                     TextInput::make('country')->placeholder('Enter Country')->default('India')->readOnly()->required(),
                 ])->columns(2),
 
-                Repeater::make('image')
-     ->relationship()
-    ->schema([
-        FileUpload::make('path')
-            ->label('Image')
-            ->required()
-            ->directory('uploads')
-            ->acceptedFileTypes(['image/jpeg', 'image/png'])
-            ->image()
-            ->maxSize(10048),
-    ])
-    ->minItems(5)
-    ->maxItems(10)
-    ->reorderable()
-    ->collapsible(),
+    //             Repeater::make('image')
+    //  ->relationship()
+    // ->schema([
+    //     FileUpload::make('path')
+    //         ->label('Image')
+    //         ->required()
+    //         ->directory('uploads')
+    //         ->acceptedFileTypes(['image/jpeg', 'image/png'])
+    //         ->image()
+    //         ->maxSize(10048),
+    // ])
+    // ->minItems(5)
+    // ->maxItems(10)
+    // ->reorderable()
+    // ->collapsible(),
             ]),
         ]);
 }
 
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('id')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('user.name')
+                ->label('Posted By')
+                ->sortable()
+                ->searchable(),
+
+            Tables\Columns\TextColumn::make('category')
+                ->badge()
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn (string $state) => ucfirst($state)),
+
+            Tables\Columns\TextColumn::make('type')
+                ->label('Property Type')
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('owner_name')
+                ->label("Owner's Name")
+                ->searchable(),
+
+            Tables\Columns\TextColumn::make('phone'),
+
+            Tables\Columns\TextColumn::make('status')
+                ->badge()
+                ->colors([
+                    'primary' => 'active',
+                    'danger' => 'deleted',
+                    'warning' => 'expired',
+                    'secondary' => 'inactive',
+                ])
+                ->sortable(),
+
+            Tables\Columns\ImageColumn::make('thumbnail')
+                ->label('Thumbnail')
+                ->circular(),
+
+            Tables\Columns\TextColumn::make('slug')
+                ->wrap(),
+
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Posted On')
+                ->dateTime()
+                ->sortable(),
+        ])
+        ->filters([
+            // Add filters if needed
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
+}
+
 
     public static function getRelations(): array
     {

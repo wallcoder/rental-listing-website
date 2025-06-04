@@ -20,7 +20,7 @@ onMounted(() => {
 
 
         <!-- SKELETON -->
-        <div class="flex flex-col gap-4 py-10 border-b-2 border-gray-200 bg-white" v-if="isLoadingArea">
+        <div class="flex flex-col gap-4  py-10 border-b-2 border-gray-200 bg-white" v-if="isLoadingArea">
             <div>
                 <div class="relative overflow-hidden h-8 w-48 mx-auto bg-gray-100 rounded">
                     <div
@@ -34,8 +34,8 @@ onMounted(() => {
                 </div>
             </div>
 
-            <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:px-18 lg:px-24">
-                <div v-for="n in 3" :key="n" class="rounded-lg overflow-hidden bg-gray-100 h-56 relative">
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:px-18 ">
+                <div v-for="n in 4" :key="n" class="rounded-lg overflow-hidden bg-gray-100 h-56 relative">
                     <div
                         class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/90 to-transparent">
                     </div>
@@ -50,7 +50,8 @@ onMounted(() => {
                 <h1 class="text-3xl font-semibold text-center">Popular <span class="text-accent">Areas</span></h1>
                 <p class="text-center text-gray-500">Some of our popular areas</p>
             </div>
-            <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:px-18 lg:px-24 m-auto">
+
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:px-18  m-auto">
                 <RouterLink :to="`/browse?street=&locality=&city=${n?.city}&state=Mizoram&pincode=&country=India`"
                     v-for="(n, i) in area" :key="i" class=" rounded-lg overflow-hidden relative group">
                     <img v-if="i == 0" src="@/assets/mizoram.jpg" alt=""
@@ -58,6 +59,16 @@ onMounted(() => {
                     <img v-else-if="i == 1" src="@/assets/mizoram2.jpg" w-full alt=""
                         class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
                     <img v-else-if="i == 2" src="@/assets/mizoram3.jpg" alt=""
+                        class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
+                    <img v-else-if="i == 3" src="@/assets/mizoram4.jpg" alt=""
+                        class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
+                    <img v-else-if="i == 4" src="@/assets/mizoram3.jpg" alt=""
+                        class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
+                    <img v-else-if="i == 5" src="@/assets/mizoram3.jpg" alt=""
+                        class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
+                    <img v-else-if="i == 6" src="@/assets/mizoram3.jpg" alt=""
+                        class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
+                    <img v-else-if="i == 7" src="@/assets/mizoram3.jpg" alt=""
                         class="object-cover rounded-lg brightness-[0.8] w-full h-[270px] group-hover:brightness-[0.9] group-hover:scale-110 transition-all duration-500 ">
 
                     <div

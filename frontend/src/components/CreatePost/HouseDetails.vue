@@ -5,100 +5,95 @@ import { storeToRefs } from 'pinia'
 const createPost = useCreatePostStore()
 const { category, houseDetails, area, price } = storeToRefs(createPost)
 </script>
+
 <template>
-    <div class="rounded-xl bg-white p-4 flex flex-col gap-2 border border-gray-300" v-if="category == 'house'">
-        <h1 class="text-xl">House Details</h1>
-        <div class="flex flex-col gap-4">
-            <div class="flex gap-10 ">
-                <div class="flex flex-col w-full">
-                    <label for="description">Description<span class="text-accent">*</span></label>
-                    <textarea v-model="houseDetails.description" required name="description" id="description" class="border rounded-lg p-2" cols="100" rows="4"></textarea>
+    <div v-if="category !== 'shop'" class="rounded-xl bg-white p-6 border border-gray-300 space-y-6">
+        <h1 class="text-2xl font-semibold">House Details</h1>
 
+        <!-- Description -->
+        <div>
+            <label for="description" class="block mb-1 font-medium">Description <span class="text-accent">*</span></label>
+            <textarea v-model="houseDetails.description" id="description" required rows="4"
+                class="w-full border rounded-lg p-3 outline-none resize-none"></textarea>
+        </div>
+
+        <!-- Price -->
+        <div class="flex flex-col sm:flex-row gap-6">
+            <div class="flex flex-col w-full sm:max-w-xs">
+                <label for="price" class="mb-1 font-medium">Price <span v-if="category === 'house'">(per month)</span> <span v-else-if="category === 'home_stay'">(per day)</span> <span class="text-accent">*</span></label>
+                <div class="flex items-center gap-2 border rounded-lg px-3 py-2">
+                    <span>₹</span>
+                    <input v-model="price" id="price" type="number" min="0" required class="w-full outline-none"
+                        placeholder="Enter price" />
                 </div>
-
-
-
             </div>
-            <div class="flex gap-10 ">
-                <div class="flex flex-col w-[150px]">
-                    <label for="price ">Price(per month) <span class="text-accent">*</span></label>
-                    <div class="flex items-center gap-2">
-                        <span class="">₹</span>
-                        <input type="number" name="price" id="price" v-model="price"
-                            class="border p-2 rounded-lg w-full outline-none" min="0" required>
-                    </div>
 
-                </div>
-
-
-
-            </div>
-            <div class="flex gap-10 ">
-                <div class="flex flex-col w-[60px]">
-                    <label for="bathroom">Area(sq.m)<span class="text-accent">*</span></label>
-                    <input type="number" name="Area" id="Area" v-model="area"
-                        class="border p-2 rounded-lg w-full outline-none" min="0" required>
-
-                </div>
-
-                <div class="flex flex-col w-[60px]">
-                    <label for="bathroom">Bathroom<span class="text-accent">*</span></label>
-
-                    <input type="number" name="bathroom" id="bathroom" v-model="houseDetails.bathroom" step="1"
-                        class="border p-2 rounded-lg w-full outline-none" min="0" required>
-
-                </div>
-                <div class="flex flex-col w-[60px]">
-                    <label for="bedrrom">Bedroom<span class="text-accent">*</span></label>
-                    <input type="number" name="bedroom" id="bedroom" v-model="houseDetails.bedroom"
-                        class="border p-2 rounded-lg w-full outline-none" min="0" required>
-
-                </div>
-
-            </div>
-            <div class="flex gap-10 items-center">
-                <div class="flex flex-col">
-                    <span>Balcony<span class="text-accent">*</span></span>
-                    <div class="flex gap-1 items-center">
-                        <input v-model="houseDetails.balcony" type="radio" name="balcony" id="balconyYes" value="yes">
-                        <label for="balconyYes">Yes</label>
-                    </div>
-                    <div class="flex gap-1 items-center">
-                        <input v-model="houseDetails.balcony" type="radio" name="balcony" id="balconyNo" value="no">
-                        <label for="balconyNo">No</label>
-                    </div>
-                </div>
-
-                <div class="flex flex-col">
-                    <span>Parking<span class="text-accent">*</span></span>
-                    <div class="flex gap-1 items-center">
-                        <input v-model="houseDetails.parking" type="radio" name="parking" id="parkingYes" value="yes">
-                        <label for="parkingYes">Yes</label>
-                    </div>
-                    <div class="flex gap-1 items-center">
-                        <input v-model="houseDetails.parking" type="radio" name="parking" id="parkingNo" value="no">
-                        <label for="parkingNo">No</label>
-                    </div>
-
-                </div>
-
-                <div class="flex flex-col">
-                    <span>Furnished<span class="text-accent">*</span></span>
-                    <div class="flex gap-1 items-center">
-                        <input v-model="houseDetails.furnished" type="radio" name="furnished" id="furnishedYes" value="yes">
-                        <label for="furnishedYes">Yes</label>
-                    </div>
-                    <div class="flex gap-1 items-center">
-                        <input v-model="houseDetails.furnished" type="radio" name="furnished" id="furnishedNo" value="no">
-                        <label for="furnishedNo">No</label>
-                    </div>
-
-                </div>
-
-
+            <!-- Area -->
+            <div class="flex flex-col w-full sm:max-w-xs">
+                <label for="area" class="mb-1 font-medium">Area (sq.m) <span class="text-accent">*</span></label>
+                <input v-model="area" id="area" type="number" min="0" required
+                    class="w-full border rounded-lg p-2 outline-none" placeholder="e.g., 100" />
             </div>
         </div>
 
+        <!-- Rooms -->
+        <div class="flex flex-col sm:flex-row gap-6">
+            <div class="flex flex-col w-full sm:max-w-[120px]">
+                <label for="bathroom" class="mb-1 font-medium">Bathrooms <span class="text-accent">*</span></label>
+                <input v-model="houseDetails.bathroom" id="bathroom" type="number" min="0" step="1" required
+                    class="w-full border rounded-lg p-2 outline-none" />
+            </div>
 
+            <div class="flex flex-col w-full sm:max-w-[120px]">
+                <label for="bedroom" class="mb-1 font-medium">Bedrooms <span class="text-accent">*</span></label>
+                <input v-model="houseDetails.bedroom" id="bedroom" type="number" min="0" required
+                    class="w-full border rounded-lg p-2 outline-none" />
+            </div>
+        </div>
+
+        <!-- Radio Groups -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+                <span class="block mb-1 font-medium">Balcony <span class="text-accent">*</span></span>
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-2">
+                        <input type="radio" v-model="houseDetails.balcony" value="yes" name="balcony" />
+                        Yes
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="radio" v-model="houseDetails.balcony" value="no" name="balcony" />
+                        No
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <span class="block mb-1 font-medium">Parking <span class="text-accent">*</span></span>
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-2">
+                        <input type="radio" v-model="houseDetails.parking" value="yes" name="parking" />
+                        Yes
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="radio" v-model="houseDetails.parking" value="no" name="parking" />
+                        No
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <span class="block mb-1 font-medium">Furnished <span class="text-accent">*</span></span>
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-2">
+                        <input type="radio" v-model="houseDetails.furnished" value="yes" name="furnished" />
+                        Yes
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="radio" v-model="houseDetails.furnished" value="no" name="furnished" />
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 </template>

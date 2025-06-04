@@ -97,7 +97,10 @@ onMounted(() => {
 
         <div v-else class="w-full flex flex-col">
             <h1 class="text-3xl text-center">Transactions</h1>
-
+            <!-- <pre>
+                 {{ userTransactions }}
+            </pre> -->
+           
             <div v-if="userTransactions?.length != 0" class="flex flex-col   py-8 gap-4">
                 
                 <div class="flex flex-col py-8 gap-4">
@@ -106,11 +109,11 @@ onMounted(() => {
                         <!-- Left: Basic Info -->
                         <div class="flex flex-col gap-2 w-full md:w-2/3">
                             <div class="text-lg font-semibold text-gray-800">
-                                ₹{{ (parseFloat(t?.amount) / 100).toFixed(2) }} <span class="text-sm text-gray-500">({{
+                                ₹{{ (parseFloat(t?.amount)).toFixed(2) }} <span class="text-sm text-gray-500">({{
                                     t?.currency }})</span>
                             </div>
                             <div class="text-sm text-gray-600">
-                                <span class="font-medium">Purpose:</span> {{ t?.purpose }}
+                                <span class="font-medium">Booking</span> {{ t?.purpose }}
                             </div>
                             <div class="text-sm text-gray-600" v-if="t?.post_id">
                                 <span class="font-medium">Post ID:</span> {{ t?.post_id }}
@@ -140,7 +143,7 @@ onMounted(() => {
 
             </div>
             <div v-else class="text-center py-6 text-lg text-gray-600 ">
-                You have no posts
+                You have no transactions
 
             </div>
 

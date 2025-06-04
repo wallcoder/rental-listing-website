@@ -70,7 +70,7 @@ const extractSearchAddress = async (place) => {
         country: ''
     }
     if (!place.address_components){
-        console.log("NOOO")
+        
         return}
   
     let streetNumber = ''

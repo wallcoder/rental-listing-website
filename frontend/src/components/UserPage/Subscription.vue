@@ -114,8 +114,8 @@ onMounted(() => {
                                 <span class="font-medium">Activated On:</span>
                                 {{ new Date(p?.created_at).toLocaleString() }}
                             </div>
-
-                            <div class="text-sm text-gray-600" v-if="p?.plan.expires_at">
+                            
+                            <div class="text-sm text-gray-600" v-if="p?.expires_at">
                                 <span class="font-medium">Expires On:</span>
                                 {{ new Date(p?.expires_at).toLocaleDateString() }}
                             </div>
