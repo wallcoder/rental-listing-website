@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\User;
 use Exception;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Container\Attributes\Log;
@@ -87,7 +88,9 @@ public function storePayment(Request $request)
 public function getUserPayments(Request $request){
 
     try{
-         $payment = Payment::where('user_id', $request->user()->id)->get();
+         $payment = Payment::where('user_id', $request->user()->id)->with(['booking'=>function($query){
+            $query->with('post');
+         }])->get();
 
           return response()->json([
             'success' => true,
@@ -97,7 +100,7 @@ public function getUserPayments(Request $request){
     }catch(Exception $e){
          return response()->json([
             'success' => false,
-            'message' => 'Failed to store payment.',
+            'message' => 'Failed to get payment.',
             'error' => $e->getMessage(),
         ], 500);
     }
@@ -161,7 +164,7 @@ public function registerSubMerchant(Request $request)
 
         if ($response->successful()) {
             $accountData = $response->json();
-
+            $editUser = User::where('id', $request->user()->id)->update(['merchant_id'=>$accountData['id']]);
             return response()->json([
                 'message' => 'Sub-merchant registered successfully',
                 'account_id' => $accountData['id'],

@@ -20,4 +20,8 @@ class Payment extends Model
     public function post(): BelongsTo{
         return $this->belongsTo(Post::class);
     }
+
+    public function booking(): BelongsTo{
+        return $this->belongsTo(Booking::class);
+    }
 }

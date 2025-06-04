@@ -25,7 +25,7 @@ class PostController extends Controller
             $pag = $request->query('pag');
 
             if(!$loc){
-                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted', 'is_rented')->with(['location' => function($query){
+                $post = Post::select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'created_at', 'is_boosted', 'is_rented', 'name')->with(['location' => function($query){
                     $query->select('post_id','locality', 'city');
                 }, 'house:post_id,bedroom,bathroom', 'shop:post_id,water_supply,electricity'])->orderBy('created_at', 'desc')->cursorPaginate($pag);
 
@@ -78,7 +78,7 @@ class PostController extends Controller
         $pag = $request->query('limit', 20);
 
         // Base query
-        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'is_boosted', 'is_rented',  'slug', 'price', 'area', 'created_at')
+        $query = Post::select('id', 'user_id', 'category', 'type', 'thumbnail', 'status', 'is_boosted', 'is_rented', 'name',  'slug', 'price', 'area', 'created_at')
             ->where('status', 'active')->with('house', 'shop')
             ->whereHas('location', function($q) use ($street, $locality, $city, $state, $pincode, $country) {
                 $q->when($street, fn($q) => $q->where('street', 'like', "%$street%"));
@@ -216,6 +216,7 @@ if (($category === 'house' || $category == 'home_stay') && ($minBed || $maxBed |
                 'user_id'=>$user,
                 'category'=>$request->input('category'),
                 'type'=>$request->input('type'),
+                'name'=>$request->input('name'),
                 'area'=>$request->input('area'),
                 'price'=>$request->input('price'),
                 'duration_type'=>$request->input('durationType'),
@@ -326,7 +327,7 @@ if (($category === 'house' || $category == 'home_stay') && ($minBed || $maxBed |
             }
 
             $posts = Post::where('user_id', $userId)
-            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'is_boosted', 'is_rented', 'created_at')
+            ->select('id','user_id', 'category', 'thumbnail', 'status', 'slug', 'area', 'price', 'is_boosted', 'is_rented', 'name', 'created_at')
             ->with([
                 'location:post_id,locality,city',
                 'house:post_id,bedroom,bathroom,description',

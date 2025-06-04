@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 const createPost = useCreatePostStore()
 
 
-const { category, type } = storeToRefs(createPost)
+const { category, type, name } = storeToRefs(createPost)
 
 
 </script>
@@ -27,12 +27,14 @@ const { category, type } = storeToRefs(createPost)
                         class="cursor-pointer p-1 hover:bg-accent hover:text-white rounded-2xl px-4 ">Shop</label>
                     <input v-model="category" type="radio" hidden name="category" value="shop" id="shop" required>
                 </div>
-                 <div class="flex flex-col">
-                    <label for="home_stay" :class="category === 'home_stay' ? 'bg-accent text-white border-accent ' : 'bg-gray-100'"
+                <div class="flex flex-col">
+                    <label for="home_stay"
+                        :class="category === 'home_stay' ? 'bg-accent text-white border-accent ' : 'bg-gray-100'"
                         class="cursor-pointer p-1 hover:bg-accent hover:text-white rounded-2xl px-4 ">Home Stay</label>
                     <input v-model="category" type="radio" hidden name="category" value="home_stay" id="home_stay" required>
                 </div>
             </div>
+
         </div>
 
         <div class="flex flex-col">
@@ -51,6 +53,16 @@ const { category, type } = storeToRefs(createPost)
                     <input v-model="type" type="radio" hidden name="type" value="assam-type" id="assamType" required>
                 </div>
             </div>
+        </div>
+
+        <div class="flex flex-col w-full sm:max-w-xs">
+            <label for="price" class="mb-1 font-medium">Name  </label>
+            <div class="flex items-center gap-2 border rounded-lg px-3 py-2">
+               
+                <input v-model="name" id="price" type="text"  class="w-full outline-none"
+                    placeholder="Enter name of the property(optional)" />
+            </div>
+           
         </div>
     </div>
 </template>

@@ -173,7 +173,8 @@ class AuthController extends Controller
         $user = JWTAuth::setToken($token)->authenticate();
         $result = [
             'name'=>$user->name,
-            'email'=>$user->email
+            'email'=>$user->email,
+            'merchant_id'=>$user->merchant_id
         ];
         return response()->json(['success'=>true, 'message'=>'Token is valid', 'data'=>$result], 200);
     }catch(Exception $e){

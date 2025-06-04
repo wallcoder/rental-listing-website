@@ -153,7 +153,7 @@ const router = createRouter({
           ]
         },
         {
-          path: 'checkout',
+          path: 'checkout/:slug',
           name: 'checkout',
           component: Checkout
         },

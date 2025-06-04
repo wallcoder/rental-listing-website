@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->enum('category', ['house', 'shop', 'home_stay']);
             $table->string('type');
+            $table->string('name')->nullable();
             $table->string('thumbnail');
             $table->string('owner_name')->nullable;
             $table->string('phone');

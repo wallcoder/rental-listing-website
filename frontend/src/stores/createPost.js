@@ -11,7 +11,7 @@ export const useCreatePostStore = defineStore('createPost', () => {
     const area = ref(null)
     const price = ref(null)
     const loading = ref(false)
-    
+    const name = ref("")
     const images = ref([])
     const thumbnail = ref(null)
     const thumbnailPreview = ref(null)
@@ -160,6 +160,7 @@ export const useCreatePostStore = defineStore('createPost', () => {
     const reset = () => {
         category.value = 'house'
         type.value = 'concrete'
+        name.value = ""
         area.value = null
         price.value = null
         images.value = []
@@ -308,7 +309,7 @@ export const useCreatePostStore = defineStore('createPost', () => {
             formData.append('area', area.value)
             formData.append('price', price.value)
             formData.append('boost', boost)
-
+            formData.append('name', name.value)
 
             if (thumbnail.value) {
                 formData.append('thumbnail', thumbnail.value)
@@ -385,7 +386,7 @@ export const useCreatePostStore = defineStore('createPost', () => {
 
 
     return {
-        category, type, images, loading, previews, loader, autocompleteInput, autocompleteInstance, markers, location, houseDetails, contactDetails, area, price,
+        category, type, name, images, loading, previews, loader, autocompleteInput, autocompleteInstance, markers, location, houseDetails, contactDetails, area, price,
         shopDetails, address, thumbnail, thumbnailPreview, submit, reset,
         removePreview, handleImageUpload, addMarker, removeMarker, extractAddress, removeThumbnailPreview, handleThumbnailUpload
     }

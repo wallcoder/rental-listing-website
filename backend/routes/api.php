@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\SaveController;
 use App\Http\Middleware\AuthPlan;
+use App\Http\Middleware\CheckMerchant;
 use App\Http\Middleware\JwtAuthenticate;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -33,19 +35,25 @@ Route::middleware(JwtAuthenticate::class)->group(function(){
     Route::put('/user/change-password', [AuthController::class, 'changePassword']);
     Route::put('/plan/subscribe/{id}', [PlanController::class, 'update']);
     // Route::post('/post/create', [PostController::class, 'store']);
-    Route::post('/post/create', [PostController::class, 'store']);
+    Route::middleware(CheckMerchant::class)->post('/post/create', [PostController::class, 'store']);
     Route::post('/post/mark-rent/{id}', [PostController::class, 'markRented']);
     Route::post('/save/create/{id}', [SaveController::class, 'store']);
     Route::get('/saves', [SaveController::class, 'index']);
     Route::get('/saves/listings', [SaveController::class, 'getSavedListings']);
     Route::get('/user/posts', [PostController::class, 'getUserPosts']);
     Route::post('/create-order', [PaymentController::class, 'createOrder']);
+    Route::post('/booking/create-order', [BookingController::class, 'createOrder']);
+    Route::post('/booking/verify-payment', [BookingController::class, 'verifyPayment']);
     Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
     Route::post('/store-payment', [PaymentController::class, 'storePayment']);
     Route::post('/store-failed-payment', [RazorpayController::class, 'storeFailed']);
     Route::get('/user/payments', [PaymentController::class, 'getUserPayments']);
     Route::get('/user/plans', [PlanController::class, 'show']);
     Route::post('/user/kyc', [PaymentController::class, 'registerSubMerchant']);
+    Route::get('/checkout-info/{slug}', [BookingController::class, 'getCheckoutInfo']);
+    Route::post('/booking/insert', [BookingController::class, 'insertBooking']);
+    Route::get('/check-booking', [BookingController::class, 'checkBookingConflict']);
+    Route::post('/booking/store-payment', [BookingController::class, 'storePayment']);
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'handler'] )->middleware([ 'signed'])->name('verification.verify');
     
    

@@ -1,10 +1,12 @@
 <script setup>
 import ButtonLink from '@/components/ButtonLink.vue'
 import FormInput from '@/components/FormInput.vue'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 import { ref } from 'vue'
 import axios from 'axios'
 import { push } from 'notivue'
-
+const { user} = storeToRefs(useAuthStore())
 const kyc = ref({
     email: '',
     phone: '',
@@ -51,8 +53,9 @@ const submitKYC = async () => {
 
 <template>
     <section class="flex flex-col items-center gap-4">
-        <h1 class="text-3xl text-center">KYC</h1>
-        <form class="flex flex-col gap-4 w-full md:px-[20%]" @submit.prevent="submitKYC">
+        <h1 class="text-3xl text-center">KYC </h1>
+        
+        <form v-if="!user.merchant_id" class="flex flex-col gap-4 w-full md:px-[20%]" @submit.prevent="submitKYC">
             <h1 class="text-xl">KYC Onboarding</h1>
 
             <!-- Row 1 -->

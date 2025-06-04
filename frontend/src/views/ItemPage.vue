@@ -1,6 +1,10 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { RouterLink } from 'vue-router';
 import "swiper/css";
@@ -65,6 +69,25 @@ function recenterMap() {
     if (mapRef.value && mapRef.value.map) {
         mapRef.value.map.panTo(location.value);
     }
+}
+
+function onBookNow() {
+  if (!dateRange.value[0] || !dateRange.value[1]) {
+    alert('Please select check-in and check-out dates first.')
+    return
+  }
+
+  const checkIn = dateRange.value[0].toISOString().slice(0, 10) // YYYY-MM-DD
+  const checkOut = dateRange.value[1].toISOString().slice(0, 10)
+
+  router.push({
+    name: 'checkout', // route name in your router
+    params: { slug: props.slug },   // passing slug as route param
+    query: {
+      checkIn,
+      checkOut,
+    },
+  })
 }
 
 function openInGoogleMaps() {
@@ -238,6 +261,7 @@ const totalPrice = computed(() => {
 
                     <!-- Description -->
                     <div class="space-y-2">
+                        
                         <div v-for="n in 4" :key="n" class="relative overflow-hidden h-4 bg-gray-100 rounded w-full">
                             <div
                                 class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent">
@@ -416,6 +440,7 @@ const totalPrice = computed(() => {
                             </div>
 
                         </div>
+                        <h2 class="text-3xl">{{ item?.name }}</h2>
                         <p class="text-gray-700 " v-if="item?.category == 'house' || item?.category == 'home_stay'"> {{
                             item.house?.description }}
                         </p>
@@ -460,7 +485,7 @@ const totalPrice = computed(() => {
                                         class="text-gray-700">Email: {{ item.email }}</span></li>
 
                             </ul>
-                            <div class="mt-4">
+                            <div v-if="item?.category === 'home_stay'" class="mt-4">
                                 <!-- <p class="text-gray-700">
                                     Price per night: ₹{{ item.price }}
                                 </p> -->
@@ -472,7 +497,7 @@ const totalPrice = computed(() => {
                                 </p>
                             </div>
 
-                            <div class="py-4">
+                            <div class="py-4" v-if="item?.category === 'home_stay'">
                                 <label class="block mb-1 font-medium">Select Check-in & Check-out Dates:</label>
                                 <Datepicker v-model="dateRange" :range="true" :min-date="new Date()"
                                     :disabled-dates="isDateDisabled" placeholder="Choose dates" :teleport="true"
@@ -487,7 +512,7 @@ const totalPrice = computed(() => {
                                     Selected dates include booked dates. Please select a continuous range without conflicts.
                                 </p>
 
-                                <ButtonLink content="Book Now" icon="bx bx-wallet"
+                                <ButtonLink v-if="item?.category === 'home_stay'" content="Book Now" :isLink="false" :fun="()=>{onBookNow()}" icon="bx bx-wallet"
                                     :class="{ 'opacity-50 cursor-not-allowed': !isValidRange }" :disabled="!isValidRange" />
 
                             </div>
